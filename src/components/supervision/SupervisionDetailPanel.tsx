@@ -41,9 +41,6 @@ export default function SupervisionDetailPanel({
           <TimeIndicator timeAgo={item.timeAgo} minutesAgo={item.minutesAgo} />
         </div>
         <h2 className="mt-2 text-base font-semibold leading-snug">{item.title}</h2>
-        <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-          {item.authorityTag}
-        </p>
       </div>
 
       {/* Scrollable detail content */}
@@ -58,7 +55,6 @@ export default function SupervisionDetailPanel({
       {/* Action bar — sticky at bottom */}
       <SupervisionActionBar
         onApprove={() => onApprove?.(item.id)}
-        onModify={() => onApprove?.(item.id)}
         onReject={() => onReject?.(item.id)}
         onEscalate={() => onEscalate?.(item.id)}
       />
