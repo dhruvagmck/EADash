@@ -164,28 +164,159 @@ export type PreferenceCategory =
   | "scheduling"
   | "communication"
   | "expenses"
+  | "timesheets"
   | "general"
+
+export type PreferenceSource = "manual" | "learned" | "outlook" | "calendar"
+
+export type SeatPreference = "window" | "middle" | "aisle" | ""
+export type CabinClass = "economy" | "premium-economy" | "business" | "first" | ""
+export type RedEyePolicy = "allow" | "never"
+export type TonePreset = "formal" | "conversational" | "neutral"
+
+// ── Structured Preferences by Domain ──
+
+export interface TravelPreferences {
+  seatShortHaul: SeatPreference
+  seatLongHaul: SeatPreference
+  preferredAirlines: string[]
+  avoidAirlines: string[]
+  preferredHotels: string[]
+  avoidHotels: string[]
+  cabinDomestic: CabinClass
+  cabinInternational: CabinClass
+  redEyePolicy: RedEyePolicy
+}
+
+export interface SchedulingPreferences {
+  earliestMeeting: string // "09:00"
+  latestMeeting: string   // "17:30"
+  timezone: string
+  protectedBlocks: ProtectedBlock[]
+  maxMeetingsPerDay: number | null
+  lightDays: string[]     // ["Friday"]
+}
+
+export interface ProtectedBlock {
+  id: string
+  days: string[]          // ["Tuesday", "Thursday"]
+  startTime: string       // "12:00"
+  endTime: string         // "13:00"
+  label: string           // "Gym"
+  source: PreferenceSource
+}
+
+export interface CommunicationPreferences {
+  defaultTone: TonePreset
+  defaultSignOff: string
+  internalChannel: string // "Teams" | "Email" | "Slack"
+}
+
+export interface ExpensePreferences {
+  submissionCadence: string // "ad-hoc" | "weekly" | "bi-weekly" | "monthly"
+  preferredSubmissionDay: string
+  receiptDetailLevel: string // "minimal" | "standard" | "detailed"
+  defaultCategories: string[]
+  approvalThreshold: number | null // dollar amount
+}
+
+export interface StructuredPreferences {
+  travel: TravelPreferences
+  scheduling: SchedulingPreferences
+  communication: CommunicationPreferences
+  expenses: ExpensePreferences
+}
+
+// ── Timesheet Tracking ──
+
+export interface ChargeCode {
+  id: string
+  code: string
+  clientName: string
+  engagementName: string
+  budgetedDays: number
+  usedDays: number
+  colorAccent: string
+}
+
+export interface TimesheetPeriod {
+  id: string
+  label: string           // "Feb 1–15, 2026"
+  startDate: string
+  endDate: string
+  status: "draft" | "submitted" | "approved" | "overdue"
+  totalDays: number
+  entries: TimesheetEntry[]
+}
+
+export interface TimesheetEntry {
+  date: string
+  chargeCodeId: string
+  days: number            // typically 1 (standard 7h day)
+  location: string        // auto-inferred from travel data
+  locationSource: "travel-inferred" | "manual" | "default-office"
+  type: "billable" | "pto" | "public-holiday" | "sick" | "training"
+  typeSource: PreferenceSource // "calendar" for PTO/holidays
+  notes: string
+}
+
+export interface MonthlyUtilization {
+  month: string           // "2026-02"
+  totalWorkingDays: number
+  billableDays: number
+  ptoDays: number
+  holidayDays: number
+  byChargeCode: { chargeCodeId: string; days: number }[]
+}
+
+export interface TimesheetData {
+  chargeCodes: ChargeCode[]
+  currentPeriod: TimesheetPeriod
+  recentPeriods: TimesheetPeriod[]
+  utilization12m: MonthlyUtilization[]
+  standardDayHours: number // always 7
+  submissionCadence: "semi-monthly" // always 1st-15th and 16th-end
+  notes: string[]
+}
+
+// ── Legacy free-text preferences (still used for additional notes) ──
 
 export interface PartnerPreference {
   id: string
   category: PreferenceCategory
   text: string
-  source: "manual" | "learned"
+  source: PreferenceSource
   linkedRuleIds: string[]
   updatedAt: string
   updatedBy: string
 }
 
+// ── Key People (Outlook-enriched) ──
+
 export interface VIPContact {
   name: string
   relationship: string
   notes: string
+  source: "manual" | "outlook-inferred" | "outlook-confirmed"
+  interactionStats?: {
+    emailCount30d: number
+    meetingCount30d: number
+    lastInteraction: string
+  }
+  status: "confirmed" | "suggested" | "dismissed"
 }
+
+// ── Recurring Commitments (Calendar-enriched) ──
 
 export interface RecurringCommitment {
   title: string
   frequency: string
   notes: string
+  source: "manual" | "calendar-inferred" | "calendar-confirmed"
+  calendarEventId?: string
+  nextOccurrence?: string
+  confidence?: number     // 0–1 for inferred items
+  status: "confirmed" | "suggested" | "dismissed"
 }
 
 export interface DeskNote {
@@ -198,7 +329,9 @@ export interface DeskNote {
 
 export interface PartnerProfile {
   partnerId: string
-  preferences: PartnerPreference[]
+  structuredPreferences: StructuredPreferences
+  timesheetData: TimesheetData
+  preferences: PartnerPreference[]  // free-text additional notes per category
   vipContacts: VIPContact[]
   recurringCommitments: RecurringCommitment[]
   escalationNotes: string
