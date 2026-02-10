@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
   Plus,
-  User,
   X,
   Mail,
   Calendar,
