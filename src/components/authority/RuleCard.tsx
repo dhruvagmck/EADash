@@ -15,7 +15,7 @@ import {
 import { Clock, Zap, Heart, ChevronDown, ChevronUp } from "lucide-react"
 import { useDashboardState } from "@/store/DashboardContext"
 import { useNavigate } from "react-router-dom"
-import { cn } from "@/lib/utils"
+
 
 interface RuleCardProps {
   rule: AuthorityRule
