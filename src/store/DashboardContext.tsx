@@ -12,6 +12,11 @@ import type {
   AuthorityAdjustment,
   ProactiveGuidance,
   SignalBlockData,
+  PartnerProfile,
+  PartnerPreference,
+  DeskNote,
+  VIPContact,
+  RecurringCommitment,
 } from "@/data/types"
 import { supervisionItems as initialSupervision } from "@/data/supervision"
 import { exceptionItems as initialExceptions } from "@/data/exceptions"
@@ -20,6 +25,7 @@ import {
   proactiveGuidance as initialGuidance,
 } from "@/data/insights"
 import { signalBlocks as initialSignals } from "@/data/signals"
+import { partnerProfiles as initialProfiles } from "@/data/profiles"
 
 // ── Actions ──
 
@@ -31,6 +37,17 @@ type Action =
   | { type: "DISMISS_ADJUSTMENT"; id: string }
   | { type: "DISMISS_GUIDANCE"; id: string }
   | { type: "DISMISS_SIGNAL_ITEM"; signalId: string; itemIndex: number }
+  // Partner Profile actions
+  | { type: "UPDATE_PREFERENCE"; partnerId: string; preference: PartnerPreference }
+  | { type: "DELETE_PREFERENCE"; partnerId: string; preferenceId: string }
+  | { type: "ADD_DESK_NOTE"; partnerId: string; note: DeskNote }
+  | { type: "TOGGLE_PIN_NOTE"; partnerId: string; noteId: string }
+  | { type: "UPDATE_COVERAGE_HANDOFF"; partnerId: string; text: string }
+  | { type: "UPDATE_ESCALATION_NOTES"; partnerId: string; text: string }
+  | { type: "ADD_VIP_CONTACT"; partnerId: string; contact: VIPContact }
+  | { type: "REMOVE_VIP_CONTACT"; partnerId: string; contactName: string }
+  | { type: "ADD_COMMITMENT"; partnerId: string; commitment: RecurringCommitment }
+  | { type: "REMOVE_COMMITMENT"; partnerId: string; commitmentTitle: string }
 
 // ── State ──
 
@@ -40,6 +57,7 @@ interface DashboardState {
   adjustments: AuthorityAdjustment[]
   guidance: ProactiveGuidance[]
   signals: SignalBlockData[]
+  partnerProfiles: PartnerProfile[]
 }
 
 const initialState: DashboardState = {
@@ -48,6 +66,17 @@ const initialState: DashboardState = {
   adjustments: [...initialAdjustments],
   guidance: [...initialGuidance],
   signals: [...initialSignals],
+  partnerProfiles: [...initialProfiles],
+}
+
+// ── Helper: update a single partner profile ──
+
+function updateProfile(
+  profiles: PartnerProfile[],
+  partnerId: string,
+  updater: (p: PartnerProfile) => PartnerProfile
+): PartnerProfile[] {
+  return profiles.map((p) => (p.partnerId === partnerId ? updater(p) : p))
 }
 
 // ── Reducer ──
@@ -106,6 +135,176 @@ function reducer(state: DashboardState, action: Action): DashboardState {
             }
           })
           .filter((s) => s.count > 0),
+      }
+    }
+
+    // ── Partner Profile actions ──
+
+    case "UPDATE_PREFERENCE": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => {
+            const existing = p.preferences.findIndex(
+              (pref) => pref.id === action.preference.id
+            )
+            const newPrefs =
+              existing >= 0
+                ? p.preferences.map((pref) =>
+                    pref.id === action.preference.id ? action.preference : pref
+                  )
+                : [...p.preferences, action.preference]
+            return { ...p, preferences: newPrefs, lastUpdated: "Just now", lastUpdatedBy: "You" }
+          }
+        ),
+      }
+    }
+
+    case "DELETE_PREFERENCE": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            preferences: p.preferences.filter((pref) => pref.id !== action.preferenceId),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "ADD_DESK_NOTE": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            deskNotes: [action.note, ...p.deskNotes],
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "TOGGLE_PIN_NOTE": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            deskNotes: p.deskNotes.map((n) =>
+              n.id === action.noteId ? { ...n, pinned: !n.pinned } : n
+            ),
+          })
+        ),
+      }
+    }
+
+    case "UPDATE_COVERAGE_HANDOFF": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            coverageHandoff: action.text,
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "UPDATE_ESCALATION_NOTES": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            escalationNotes: action.text,
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "ADD_VIP_CONTACT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            vipContacts: [...p.vipContacts, action.contact],
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "REMOVE_VIP_CONTACT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            vipContacts: p.vipContacts.filter((c) => c.name !== action.contactName),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "ADD_COMMITMENT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            recurringCommitments: [...p.recurringCommitments, action.commitment],
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "REMOVE_COMMITMENT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            recurringCommitments: p.recurringCommitments.filter(
+              (c) => c.title !== action.commitmentTitle
+            ),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
       }
     }
 
@@ -181,6 +380,68 @@ export function useDashboardActions() {
     [dispatch]
   )
 
+  // ── Profile actions ──
+
+  const updatePreference = useCallback(
+    (partnerId: string, preference: PartnerPreference) =>
+      dispatch({ type: "UPDATE_PREFERENCE", partnerId, preference }),
+    [dispatch]
+  )
+
+  const deletePreference = useCallback(
+    (partnerId: string, preferenceId: string) =>
+      dispatch({ type: "DELETE_PREFERENCE", partnerId, preferenceId }),
+    [dispatch]
+  )
+
+  const addDeskNote = useCallback(
+    (partnerId: string, note: DeskNote) =>
+      dispatch({ type: "ADD_DESK_NOTE", partnerId, note }),
+    [dispatch]
+  )
+
+  const togglePinNote = useCallback(
+    (partnerId: string, noteId: string) =>
+      dispatch({ type: "TOGGLE_PIN_NOTE", partnerId, noteId }),
+    [dispatch]
+  )
+
+  const updateCoverageHandoff = useCallback(
+    (partnerId: string, text: string) =>
+      dispatch({ type: "UPDATE_COVERAGE_HANDOFF", partnerId, text }),
+    [dispatch]
+  )
+
+  const updateEscalationNotes = useCallback(
+    (partnerId: string, text: string) =>
+      dispatch({ type: "UPDATE_ESCALATION_NOTES", partnerId, text }),
+    [dispatch]
+  )
+
+  const addVIPContact = useCallback(
+    (partnerId: string, contact: VIPContact) =>
+      dispatch({ type: "ADD_VIP_CONTACT", partnerId, contact }),
+    [dispatch]
+  )
+
+  const removeVIPContact = useCallback(
+    (partnerId: string, contactName: string) =>
+      dispatch({ type: "REMOVE_VIP_CONTACT", partnerId, contactName }),
+    [dispatch]
+  )
+
+  const addCommitment = useCallback(
+    (partnerId: string, commitment: RecurringCommitment) =>
+      dispatch({ type: "ADD_COMMITMENT", partnerId, commitment }),
+    [dispatch]
+  )
+
+  const removeCommitment = useCallback(
+    (partnerId: string, commitmentTitle: string) =>
+      dispatch({ type: "REMOVE_COMMITMENT", partnerId, commitmentTitle }),
+    [dispatch]
+  )
+
   return {
     approveSupervision,
     rejectSupervision,
@@ -189,6 +450,16 @@ export function useDashboardActions() {
     dismissAdjustment,
     dismissGuidance,
     dismissSignalItem,
+    updatePreference,
+    deletePreference,
+    addDeskNote,
+    togglePinNote,
+    updateCoverageHandoff,
+    updateEscalationNotes,
+    addVIPContact,
+    removeVIPContact,
+    addCommitment,
+    removeCommitment,
   }
 }
 
@@ -203,6 +474,7 @@ export function useBadgeCounts() {
 
   return {
     "/portfolio": portfolioAttention,
+    "/partners": 0,
     "/authority": 0,
     "/supervision": supervisionItems.length,
     "/exceptions": exceptionItems.length,

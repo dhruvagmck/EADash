@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Clock, Zap } from "lucide-react"
+import { Clock, Zap, Heart } from "lucide-react"
+import { useDashboardState } from "@/store/DashboardContext"
+import { useNavigate } from "react-router-dom"
 
 interface RuleCardProps {
   rule: AuthorityRule
@@ -19,6 +21,17 @@ interface RuleCardProps {
 }
 
 export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
+  const { partnerProfiles } = useDashboardState()
+  const navigate = useNavigate()
+
+  // Find preferences linked to this rule
+  const profile = partnerProfiles.find((p) => p.partnerId === rule.partnerId)
+  const linkedPrefs = profile
+    ? profile.preferences.filter((pref) =>
+        pref.linkedRuleIds.includes(rule.id)
+      )
+    : []
+
   return (
     <Card className="gap-0 p-4">
       <div className="flex items-start gap-4">
@@ -33,6 +46,23 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
         {/* Rule Content */}
         <div className="min-w-0 flex-1 space-y-2">
           <p className="text-sm font-medium">{rule.actionDescription}</p>
+
+          {/* Source Preference Annotation */}
+          {linkedPrefs.length > 0 && (
+            <button
+              onClick={() => navigate("/partners")}
+              className="flex items-start gap-1.5 rounded-md border border-indigo-100 bg-indigo-50/50 px-2.5 py-1.5 text-left transition-colors hover:bg-indigo-100/70 dark:border-indigo-900 dark:bg-indigo-950/30 dark:hover:bg-indigo-950/50"
+            >
+              <Heart className="mt-0.5 h-3 w-3 shrink-0 text-indigo-500" />
+              <div className="min-w-0">
+                {linkedPrefs.map((pref) => (
+                  <p key={pref.id} className="text-[11px] leading-snug text-indigo-700 dark:text-indigo-300">
+                    {pref.text}
+                  </p>
+                ))}
+              </div>
+            </button>
+          )}
 
           {/* Condition Chips */}
           {rule.conditions.length > 0 && (

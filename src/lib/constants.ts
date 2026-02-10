@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Lightbulb,
   Settings,
+  Users,
 } from "lucide-react"
 import type { DomainConfig, Domain, NavItem } from "@/data/types"
 
@@ -48,6 +49,7 @@ export const CONFIDENCE_STYLES = {
 
 export const NAV_ITEMS: NavItem[] = [
   { path: "/portfolio", label: "Portfolio", icon: LayoutDashboard, badge: 0 },
+  { path: "/partners", label: "Partners", icon: Users, badge: 0 },
   { path: "/authority", label: "Authority", icon: Shield, badge: 0 },
   { path: "/supervision", label: "Supervision", icon: Eye, badge: 0 },
   { path: "/exceptions", label: "Exceptions", icon: Zap, badge: 0 },

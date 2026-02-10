@@ -156,3 +156,54 @@ export interface PatternReport {
   automationTrustIndex: number
   timeAllocation: { orchestration: number; execution: number; review: number }
 }
+
+// --- Partner Profile / Desk Notes types ---
+
+export type PreferenceCategory =
+  | "travel"
+  | "scheduling"
+  | "communication"
+  | "expenses"
+  | "general"
+
+export interface PartnerPreference {
+  id: string
+  category: PreferenceCategory
+  text: string
+  source: "manual" | "learned"
+  linkedRuleIds: string[]
+  updatedAt: string
+  updatedBy: string
+}
+
+export interface VIPContact {
+  name: string
+  relationship: string
+  notes: string
+}
+
+export interface RecurringCommitment {
+  title: string
+  frequency: string
+  notes: string
+}
+
+export interface DeskNote {
+  id: string
+  timestamp: string
+  author: string
+  content: string
+  pinned: boolean
+}
+
+export interface PartnerProfile {
+  partnerId: string
+  preferences: PartnerPreference[]
+  vipContacts: VIPContact[]
+  recurringCommitments: RecurringCommitment[]
+  escalationNotes: string
+  deskNotes: DeskNote[]
+  coverageHandoff: string
+  lastUpdated: string
+  lastUpdatedBy: string
+}

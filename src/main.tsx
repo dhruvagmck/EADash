@@ -13,6 +13,7 @@ import SupervisionQueue from "@/pages/SupervisionQueue"
 import ExceptionsView from "@/pages/ExceptionsView"
 import InsightsView from "@/pages/InsightsView"
 import SettingsView from "@/pages/SettingsView"
+import PartnerProfileView from "@/pages/PartnerProfileView"
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/portfolio" replace /> },
       { path: "portfolio", element: <PortfolioDashboard /> },
+      { path: "partners", element: <PartnerProfileView /> },
       { path: "authority", element: <AuthorityEditor /> },
       { path: "supervision", element: <SupervisionQueue /> },
       { path: "exceptions", element: <ExceptionsView /> },
