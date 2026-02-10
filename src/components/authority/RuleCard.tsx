@@ -15,6 +15,7 @@ import {
 import { Clock, Zap, Heart, ChevronDown, ChevronUp } from "lucide-react"
 import { useDashboardState } from "@/store/DashboardContext"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 
 interface RuleCardProps {
@@ -26,6 +27,7 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
   const { partnerProfiles } = useDashboardState()
   const navigate = useNavigate()
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const [suggestionDismissed, setSuggestionDismissed] = useState(false)
 
   // Find preferences linked to this rule
   const profile = partnerProfiles.find((p) => p.partnerId === rule.partnerId)
@@ -144,9 +146,27 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
             </div>
           )}
 
-          {/* Suggested Adjustment — always visible */}
-          {rule.suggestedAdjustment && (
-            <SuggestedAdjustment suggestion={rule.suggestedAdjustment} />
+          {/* Suggested Adjustment — always visible unless dismissed */}
+          {rule.suggestedAdjustment && !suggestionDismissed && (
+            <SuggestedAdjustment
+              suggestion={rule.suggestedAdjustment}
+              onAccept={() => {
+                // Suggestion text contains "upgrading to CAN" — promote to CAN
+                if (onLevelChange) {
+                  onLevelChange(rule.id, "CAN")
+                }
+                setSuggestionDismissed(true)
+                toast.success("Adjustment accepted", {
+                  description: `Rule upgraded to CAN: "${rule.actionDescription}"`,
+                })
+              }}
+              onDismiss={() => {
+                setSuggestionDismissed(true)
+                toast.info("Suggestion dismissed", {
+                  description: `Keeping current level for "${rule.actionDescription}"`,
+                })
+              }}
+            />
           )}
         </div>
       </div>

@@ -1,12 +1,13 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import RuleCard from "./RuleCard"
 import AuthoritySummaryBar from "./AuthoritySummaryBar"
 import DomainIcon from "@/components/shared/DomainIcon"
 import { DOMAINS, DOMAIN_CONFIG } from "@/lib/constants"
-import type { AuthorityRule, AuthorityLevel } from "@/data/types"
+import type { AuthorityRule, AuthorityLevel, Domain } from "@/data/types"
 import { Plus } from "lucide-react"
+import { toast } from "sonner"
 
 interface AuthorityProfileProps {
   partnerId: string
@@ -32,6 +33,28 @@ export default function AuthorityProfile({
       prev.map((r) => (r.id === ruleId ? { ...r, level: newLevel } : r))
     )
   }
+
+  const handleAddRule = useCallback(
+    (domain: Domain) => {
+      const newRule: AuthorityRule = {
+        id: `rule-custom-${Date.now()}`,
+        partnerId,
+        domain,
+        level: "SHOULD",
+        actionDescription: "New custom rule — click to edit",
+        conditions: [],
+        escalationBehavior: "Hold for review",
+        lastTriggered: "Never",
+        triggerCount30d: 0,
+        overrideHistory: [],
+      }
+      setLocalRules((prev) => [...prev, newRule])
+      toast.success("Custom rule added", {
+        description: `New SHOULD-level rule created in ${DOMAIN_CONFIG[domain].label}. Adjust the authority level as needed.`,
+      })
+    },
+    [partnerId]
+  )
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col space-y-4">
@@ -84,6 +107,7 @@ export default function AuthorityProfile({
                 <Button
                   variant="outline"
                   className="w-full gap-2 border-dashed text-muted-foreground hover:text-foreground"
+                  onClick={() => handleAddRule(domain)}
                 >
                   <Plus className="h-4 w-4" />
                   Add Custom Rule

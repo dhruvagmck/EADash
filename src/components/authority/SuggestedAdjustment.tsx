@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button"
 
 interface SuggestedAdjustmentProps {
   suggestion: string
+  onAccept?: () => void
+  onDismiss?: () => void
 }
 
 export default function SuggestedAdjustment({
   suggestion,
+  onAccept,
+  onDismiss,
 }: SuggestedAdjustmentProps) {
   return (
     <div className="flex items-start gap-3 rounded-md border border-blue-200 bg-blue-50 px-3 py-2.5 dark:border-blue-800 dark:bg-blue-950">
@@ -19,6 +23,7 @@ export default function SuggestedAdjustment({
           size="sm"
           variant="ghost"
           className="h-6 px-2 text-[11px] text-blue-700 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900"
+          onClick={onAccept}
         >
           Accept
         </Button>
@@ -26,6 +31,7 @@ export default function SuggestedAdjustment({
           size="sm"
           variant="ghost"
           className="h-6 w-6 p-0 text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900"
+          onClick={onDismiss}
         >
           <X className="h-3 w-3" />
         </Button>

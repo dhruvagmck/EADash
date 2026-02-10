@@ -631,7 +631,7 @@ export default function StructuredPreferenceSection({
   return (
     <div className="space-y-3">
       {/* ── Travel ── */}
-      <DomainSection icon={Plane} label="Travel" count={travelNotes.length} defaultOpen>
+      <DomainSection icon={Plane} label="Travel" count={travelNotes.length}>
         <div className="divide-y">
           <FieldRow label="Seat (short-haul)">
             <EditableSelect
@@ -709,7 +709,7 @@ export default function StructuredPreferenceSection({
       </DomainSection>
 
       {/* ── Scheduling ── */}
-      <DomainSection icon={Calendar} label="Scheduling" count={schedNotes.length} defaultOpen>
+      <DomainSection icon={Calendar} label="Scheduling" count={schedNotes.length}>
         <div className="divide-y">
           <FieldRow label="Meeting window">
             <div className="flex items-center gap-1 text-xs">

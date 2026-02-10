@@ -10,6 +10,7 @@ interface QueueListProps {
   selectedId: string | null
   onSelect: (id: string) => void
   onApprove?: (id: string) => void
+  onBatchApproveLowRisk?: () => void
   /** null = showing all partners (grouped), string = single partner view */
   selectedPartnerId?: string | null
 }
@@ -19,6 +20,7 @@ export default function QueueList({
   selectedId,
   onSelect,
   onApprove,
+  onBatchApproveLowRisk,
   selectedPartnerId = null,
 }: QueueListProps) {
   // Group items by partner when viewing all
@@ -41,9 +43,14 @@ export default function QueueList({
         <span className="text-sm font-medium whitespace-nowrap">
           {items.length} item{items.length !== 1 ? "s" : ""} awaiting review
         </span>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 text-xs"
+          onClick={onBatchApproveLowRisk}
+        >
           <CheckSquare className="h-3.5 w-3.5 shrink-0" />
-          <span className="whitespace-nowrap">Select all low-risk</span>
+          <span className="whitespace-nowrap">Approve all low-risk</span>
         </Button>
       </div>
 

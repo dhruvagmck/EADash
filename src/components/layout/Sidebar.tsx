@@ -4,7 +4,16 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/lib/theme"
 import { useBadgeCounts } from "@/store/DashboardContext"
-import { Sun, Moon, PanelLeftClose, PanelLeft } from "lucide-react"
+import {
+  Sun,
+  Moon,
+  PanelLeftClose,
+  PanelLeft,
+  ExternalLink,
+  Calendar,
+  Plane,
+  Receipt,
+} from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
@@ -126,6 +135,55 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             )
           })}
         </nav>
+
+        {/* ── External Tools ── */}
+        <div
+          className={cn(
+            "flex shrink-0 flex-col gap-0.5 border-t border-slate-800 py-3",
+            collapsed ? "px-2" : "px-2.5"
+          )}
+        >
+          {!collapsed && (
+            <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Tools
+            </p>
+          )}
+          {[
+            { label: "ShareCal", href: "https://sharecal.example.com", icon: Calendar },
+            { label: "SkyLink", href: "https://skylink.example.com", icon: Plane },
+            { label: "Aurora", href: "https://aurora.example.com", icon: Receipt },
+          ].map((tool) => (
+            <Tooltip key={tool.label}>
+              <TooltipTrigger asChild>
+                <a
+                  href={tool.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "flex flex-row items-center rounded-md font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200",
+                    collapsed
+                      ? "justify-center px-0 py-2"
+                      : "gap-[20px] px-3 py-2 text-[13px]"
+                  )}
+                >
+                  <tool.icon className="h-[18px] w-[18px] shrink-0" />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1">{tool.label}</span>
+                      <ExternalLink className="h-3 w-3 text-slate-600" />
+                    </>
+                  )}
+                </a>
+              </TooltipTrigger>
+              {collapsed && (
+                <TooltipContent side="right">
+                  {tool.label}
+                  <ExternalLink className="ml-1.5 inline h-3 w-3 text-slate-400" />
+                </TooltipContent>
+              )}
+            </Tooltip>
+          ))}
+        </div>
 
         {/* ── Bottom controls ── */}
         <div

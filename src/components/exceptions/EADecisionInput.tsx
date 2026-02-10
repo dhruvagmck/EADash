@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { CheckCircle } from "lucide-react"
+import { toast } from "sonner"
 
 interface EADecisionInputProps {
   hasSelection: boolean
@@ -31,13 +32,43 @@ export default function EADecisionInput({
             className="mb-2 min-h-[60px] resize-none text-sm"
           />
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" className="text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs"
+              onClick={() => {
+                window.open("https://outlook.office.com", "_blank", "noopener")
+                toast.info("Opening Outlook", {
+                  description: "Launching Outlook in a new tab…",
+                })
+              }}
+            >
               Open in Outlook
             </Button>
-            <Button size="sm" variant="outline" className="text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs"
+              onClick={() => {
+                window.open("https://skylink.example.com", "_blank", "noopener")
+                toast.info("Opening SkyLink", {
+                  description: "Launching SkyLink booking system…",
+                })
+              }}
+            >
               Open SkyLink
             </Button>
-            <Button size="sm" variant="outline" className="text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-xs"
+              onClick={() => {
+                window.open("https://aurora.example.com", "_blank", "noopener")
+                toast.info("Opening Aurora", {
+                  description: "Launching Aurora expense system…",
+                })
+              }}
+            >
               Open Aurora
             </Button>
           </div>

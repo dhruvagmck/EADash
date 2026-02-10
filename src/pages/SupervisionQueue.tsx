@@ -96,6 +96,28 @@ export default function SupervisionQueue() {
     [rejectSupervision, filteredItems]
   )
 
+  const handleBatchApproveLowRisk = useCallback(() => {
+    // Low-risk: scheduling items (internal moves / room bookings) that don't
+    // involve conflicts or urgent external parties.
+    const lowRisk = filteredItems.filter(
+      (i) =>
+        i.proposedAction.type === "scheduling" ||
+        i.proposedAction.type === "expense"
+    )
+    if (lowRisk.length === 0) {
+      toast.info("No low-risk items", {
+        description: "All current items require individual review.",
+      })
+      return
+    }
+    for (const item of lowRisk) {
+      approveSupervision(item.id)
+    }
+    toast.success(`Batch approved ${lowRisk.length} low-risk item${lowRisk.length !== 1 ? "s" : ""}`, {
+      description: "Scheduling and expense items approved and sent for execution.",
+    })
+  }, [filteredItems, approveSupervision])
+
   // Keyboard shortcuts
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -172,6 +194,7 @@ export default function SupervisionQueue() {
               selectedId={selectedId}
               onSelect={setSelectedId}
               onApprove={handleApprove}
+              onBatchApproveLowRisk={handleBatchApproveLowRisk}
               selectedPartnerId={selectedPartnerId}
             />
           </div>

@@ -153,9 +153,20 @@ export default function PortfolioDetailPanel({
                         Escalate to Partner
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() =>
-                          toast.info("Opening in external system...")
-                        }
+                        onClick={() => {
+                          const systemUrls: Record<string, { name: string; url: string }> = {
+                            "client-facing": { name: "SharePoint", url: "https://sharepoint.example.com" },
+                            "internal-scheduling": { name: "Outlook Calendar", url: "https://outlook.office.com/calendar" },
+                            "travel-expenses": { name: "SkyLink", url: "https://skylink.example.com" },
+                            timesheets: { name: "Aurora", url: "https://aurora.example.com" },
+                            "email-triage": { name: "Outlook", url: "https://outlook.office.com" },
+                          }
+                          const system = systemUrls[signal.domain] ?? { name: "source system", url: "https://outlook.office.com" }
+                          window.open(system.url, "_blank", "noopener")
+                          toast.info(`Opening ${system.name}`, {
+                            description: `Launching ${system.name} in a new tab…`,
+                          })
+                        }}
                       >
                         <ExternalLink className="mr-2 h-3.5 w-3.5" />
                         Open in source system
