@@ -25,7 +25,7 @@ export default function AuthorityProfile({
     partnerRules.some((r) => r.domain === d)
   )
 
-  const defaultDomain = domainsWithRules[0] || "scheduling"
+  const defaultDomain = domainsWithRules[0] || "internal-scheduling"
 
   const handleLevelChange = (ruleId: string, newLevel: AuthorityLevel) => {
     setLocalRules((prev) =>

@@ -1,12 +1,11 @@
 import type { LucideIcon } from "lucide-react"
 
 export type Domain =
-  | "scheduling"
-  | "travel"
-  | "correspondence"
-  | "expenses"
-  | "documents"
-  | "people-sensitive"
+  | "client-facing"
+  | "internal-scheduling"
+  | "travel-expenses"
+  | "timesheets"
+  | "email-triage"
 
 export type Severity = "urgent" | "review" | "running" | "clear"
 export type AuthorityLevel = "CAN" | "SHOULD" | "CANNOT"

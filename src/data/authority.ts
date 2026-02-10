@@ -1,11 +1,11 @@
 import type { AuthorityRule } from "./types"
 
 export const authorityRules: AuthorityRule[] = [
-  // Sarah Chen — Scheduling
+  // Sarah Chen — Internal Scheduling
   {
     id: "rule-sc-sched-1",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "CAN",
     actionDescription: "Book internal meetings with available time slots",
     conditions: ["Business hours only", "No client conflict", "<5 attendees"],
@@ -20,7 +20,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-sched-2",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "SHOULD",
     actionDescription: "Reschedule meetings when conflicts arise",
     conditions: ["External party involved", "Client priority applies"],
@@ -35,7 +35,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-sched-3",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "SHOULD",
     actionDescription: "Send confirmations to external meeting attendees",
     conditions: ["External attendee", "New meeting (not recurring)"],
@@ -50,7 +50,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-sched-4",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "CANNOT",
     actionDescription: "Book personal time or modify vacation days",
     conditions: ["Weekend/evening", "Vacation/PTO days", "Personal appointments"],
@@ -60,11 +60,11 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // Sarah Chen — Travel
+  // Sarah Chen — Travel & Expenses
   {
     id: "rule-sc-travel-1",
     partnerId: "partner-1",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "CAN",
     actionDescription: "Book domestic flights within policy",
     conditions: ["Domestic routes", "Economy or Business class", "Under $2,000"],
@@ -76,7 +76,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-travel-2",
     partnerId: "partner-1",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "SHOULD",
     actionDescription: "Book international flights",
     conditions: ["International routes", "Any class"],
@@ -90,7 +90,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-travel-3",
     partnerId: "partner-1",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "CANNOT",
     actionDescription: "Book first class or private aviation",
     conditions: ["First class", "Private jet", "Charter flights"],
@@ -99,12 +99,38 @@ export const authorityRules: AuthorityRule[] = [
     triggerCount30d: 0,
     overrideHistory: [],
   },
+  {
+    id: "rule-sc-exp-1",
+    partnerId: "partner-1",
+    domain: "travel-expenses",
+    level: "SHOULD",
+    actionDescription: "Submit expenses over $500",
+    conditions: ["Amount > $500", "Client entertainment"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "30 minutes ago",
+    triggerCount30d: 4,
+    overrideHistory: [
+      { date: "Feb 2", action: "$620 client lunch submitted", result: "approved" },
+    ],
+  },
+  {
+    id: "rule-sc-exp-2",
+    partnerId: "partner-1",
+    domain: "travel-expenses",
+    level: "CAN",
+    actionDescription: "Auto-categorize and submit routine expenses under $500",
+    conditions: ["Amount <= $500", "Standard categories", "Receipt attached"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "Today",
+    triggerCount30d: 18,
+    overrideHistory: [],
+  },
 
-  // Sarah Chen — Correspondence
+  // Sarah Chen — Email Triage
   {
     id: "rule-sc-corr-1",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "SHOULD",
     actionDescription: "Draft and send client-facing correspondence",
     conditions: ["External recipient", "Client or prospect", "Non-sensitive topic"],
@@ -120,7 +146,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-corr-2",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "SHOULD",
     actionDescription: "Send board-related communications",
     conditions: ["Board members", "Board secretary", "Board-related topics"],
@@ -134,7 +160,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-corr-3",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "CAN",
     actionDescription: "Send internal scheduling confirmations",
     conditions: ["Internal recipients only", "Scheduling topic", "No financial commitments"],
@@ -146,7 +172,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-corr-4",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "CANNOT",
     actionDescription: "Send emails involving financial commitments or legal matters",
     conditions: ["Financial commitment", "Legal topic", "Contractual language"],
@@ -156,39 +182,11 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // Sarah Chen — Expenses
-  {
-    id: "rule-sc-exp-1",
-    partnerId: "partner-1",
-    domain: "expenses",
-    level: "SHOULD",
-    actionDescription: "Submit expenses over $500",
-    conditions: ["Amount > $500", "Client entertainment"],
-    escalationBehavior: "Hold for review",
-    lastTriggered: "30 minutes ago",
-    triggerCount30d: 4,
-    overrideHistory: [
-      { date: "Feb 2", action: "$620 client lunch submitted", result: "approved" },
-    ],
-  },
-  {
-    id: "rule-sc-exp-2",
-    partnerId: "partner-1",
-    domain: "expenses",
-    level: "CAN",
-    actionDescription: "Auto-categorize and submit routine expenses under $500",
-    conditions: ["Amount <= $500", "Standard categories", "Receipt attached"],
-    escalationBehavior: "Hold for review",
-    lastTriggered: "Today",
-    triggerCount30d: 18,
-    overrideHistory: [],
-  },
-
-  // Sarah Chen — Documents
+  // Sarah Chen — Client-Facing
   {
     id: "rule-sc-docs-1",
     partnerId: "partner-1",
-    domain: "documents",
+    domain: "client-facing",
     level: "SHOULD",
     actionDescription: "Prepare and circulate board documents",
     conditions: ["Board-related", "External circulation"],
@@ -200,7 +198,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-sc-docs-2",
     partnerId: "partner-1",
-    domain: "documents",
+    domain: "client-facing",
     level: "CAN",
     actionDescription: "Generate internal meeting summaries",
     conditions: ["Internal meetings", "Non-confidential"],
@@ -210,25 +208,37 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // Sarah Chen — People & Sensitive
+  // Sarah Chen — Timesheets
   {
-    id: "rule-sc-people-1",
+    id: "rule-sc-time-1",
     partnerId: "partner-1",
-    domain: "people-sensitive",
-    level: "CANNOT",
-    actionDescription: "Handle any personnel or HR-related matters",
-    conditions: ["Performance reviews", "Compensation", "HR processes"],
-    escalationBehavior: "Block and notify EA",
+    domain: "timesheets",
+    level: "CAN",
+    actionDescription: "Auto-submit weekly timesheets when all entries are within norms",
+    conditions: ["All entries ≤ 10h/day", "No flagged projects", "All codes valid"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "Today",
+    triggerCount30d: 4,
+    overrideHistory: [],
+  },
+  {
+    id: "rule-sc-time-2",
+    partnerId: "partner-1",
+    domain: "timesheets",
+    level: "SHOULD",
+    actionDescription: "Flag and hold timesheets with entries exceeding daily norms",
+    conditions: ["Any entry > 10h/day", "Flagged project codes", "Missing descriptions"],
+    escalationBehavior: "Hold for review",
     lastTriggered: "2 hours ago",
     triggerCount30d: 3,
     overrideHistory: [],
   },
 
-  // James Whitfield — Scheduling
+  // James Whitfield — Internal Scheduling
   {
     id: "rule-jw-sched-1",
     partnerId: "partner-2",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "SHOULD",
     actionDescription: "Resolve scheduling conflicts involving external parties",
     conditions: ["External attendees", "Double-booking detected"],
@@ -243,7 +253,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-sched-2",
     partnerId: "partner-2",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "CAN",
     actionDescription: "Book internal meetings and room reservations",
     conditions: ["Internal only", "Business hours", "Standard rooms"],
@@ -255,7 +265,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-sched-3",
     partnerId: "partner-2",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     level: "CANNOT",
     actionDescription: "Auto-decline meeting invitations",
     conditions: ["Any meeting decline", "Without explicit opt-in"],
@@ -265,11 +275,11 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // James Whitfield — Travel
+  // James Whitfield — Travel & Expenses
   {
     id: "rule-jw-travel-1",
     partnerId: "partner-2",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "SHOULD",
     actionDescription: "Book or change international flights",
     conditions: ["International routes", "Any change to confirmed booking"],
@@ -284,7 +294,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-travel-2",
     partnerId: "partner-2",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "CAN",
     actionDescription: "Book ground transport and hotel within policy",
     conditions: ["Under policy limits", "Preferred suppliers"],
@@ -297,7 +307,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-travel-3",
     partnerId: "partner-2",
-    domain: "travel",
+    domain: "travel-expenses",
     level: "CANNOT",
     actionDescription: "Book red-eye flights",
     conditions: ["Overnight flights", "Red-eye routes"],
@@ -306,12 +316,38 @@ export const authorityRules: AuthorityRule[] = [
     triggerCount30d: 1,
     overrideHistory: [],
   },
+  {
+    id: "rule-jw-exp-1",
+    partnerId: "partner-2",
+    domain: "travel-expenses",
+    level: "CAN",
+    actionDescription: "Auto-categorize and submit standard expenses",
+    conditions: ["Within policy", "Standard categories", "Receipt attached"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "Yesterday",
+    triggerCount30d: 22,
+    overrideHistory: [],
+  },
+  {
+    id: "rule-jw-exp-2",
+    partnerId: "partner-2",
+    domain: "travel-expenses",
+    level: "SHOULD",
+    actionDescription: "Submit expenses exceeding policy thresholds",
+    conditions: ["Over policy limit", "Requires exception"],
+    escalationBehavior: "Hold and notify via Teams",
+    lastTriggered: "5 hours ago",
+    triggerCount30d: 2,
+    overrideHistory: [
+      { date: "Jan 30", action: "NYC hotel overage submitted with exception", result: "approved" },
+    ],
+  },
 
-  // James Whitfield — Correspondence
+  // James Whitfield — Email Triage
   {
     id: "rule-jw-corr-1",
     partnerId: "partner-2",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "SHOULD",
     actionDescription: "Draft client and prospect correspondence",
     conditions: ["External recipient", "Business development topic"],
@@ -326,7 +362,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-corr-2",
     partnerId: "partner-2",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "SHOULD",
     actionDescription: "Send follow-up reminders to external contacts",
     conditions: ["No response > 3 days", "External recipient"],
@@ -341,7 +377,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-corr-3",
     partnerId: "partner-2",
-    domain: "correspondence",
+    domain: "email-triage",
     level: "CAN",
     actionDescription: "Send internal scheduling and logistics confirmations",
     conditions: ["Internal recipients", "Scheduling or logistics topic"],
@@ -351,39 +387,11 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // James Whitfield — Expenses
-  {
-    id: "rule-jw-exp-1",
-    partnerId: "partner-2",
-    domain: "expenses",
-    level: "CAN",
-    actionDescription: "Auto-categorize and submit standard expenses",
-    conditions: ["Within policy", "Standard categories", "Receipt attached"],
-    escalationBehavior: "Hold for review",
-    lastTriggered: "Yesterday",
-    triggerCount30d: 22,
-    overrideHistory: [],
-  },
-  {
-    id: "rule-jw-exp-2",
-    partnerId: "partner-2",
-    domain: "expenses",
-    level: "SHOULD",
-    actionDescription: "Submit expenses exceeding policy thresholds",
-    conditions: ["Over policy limit", "Requires exception"],
-    escalationBehavior: "Hold and notify via Teams",
-    lastTriggered: "5 hours ago",
-    triggerCount30d: 2,
-    overrideHistory: [
-      { date: "Jan 30", action: "NYC hotel overage submitted with exception", result: "approved" },
-    ],
-  },
-
-  // James Whitfield — Documents
+  // James Whitfield — Client-Facing
   {
     id: "rule-jw-docs-1",
     partnerId: "partner-2",
-    domain: "documents",
+    domain: "client-facing",
     level: "SHOULD",
     actionDescription: "Share client-facing presentations externally",
     conditions: ["Client presentation", "External sharing"],
@@ -395,7 +403,7 @@ export const authorityRules: AuthorityRule[] = [
   {
     id: "rule-jw-docs-2",
     partnerId: "partner-2",
-    domain: "documents",
+    domain: "client-facing",
     level: "CAN",
     actionDescription: "Generate and distribute internal documents",
     conditions: ["Internal only", "Non-confidential"],
@@ -405,17 +413,29 @@ export const authorityRules: AuthorityRule[] = [
     overrideHistory: [],
   },
 
-  // James Whitfield — People & Sensitive
+  // James Whitfield — Timesheets
   {
-    id: "rule-jw-people-1",
+    id: "rule-jw-time-1",
     partnerId: "partner-2",
-    domain: "people-sensitive",
-    level: "CANNOT",
-    actionDescription: "Handle any personnel or sensitive matters",
-    conditions: ["HR processes", "Confidential communications", "Legal matters"],
-    escalationBehavior: "Block and notify EA",
-    lastTriggered: "Never",
-    triggerCount30d: 0,
+    domain: "timesheets",
+    level: "CAN",
+    actionDescription: "Auto-submit weekly timesheets when all entries are within norms",
+    conditions: ["All entries ≤ 10h/day", "No flagged projects", "All codes valid"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "Yesterday",
+    triggerCount30d: 4,
+    overrideHistory: [],
+  },
+  {
+    id: "rule-jw-time-2",
+    partnerId: "partner-2",
+    domain: "timesheets",
+    level: "SHOULD",
+    actionDescription: "Flag timesheets with missing project codes or descriptions",
+    conditions: ["Missing project codes", "Empty descriptions", "Unclassified hours"],
+    escalationBehavior: "Hold for review",
+    lastTriggered: "3 days ago",
+    triggerCount30d: 2,
     overrideHistory: [],
   },
 ]

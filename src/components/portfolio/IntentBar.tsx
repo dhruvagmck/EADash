@@ -11,25 +11,24 @@ import { DOMAIN_CONFIG } from "@/lib/constants"
 export type FocusMode =
   | "all"
   | "client-facing"
-  | "people-sensitive"
-  | "travel-logistics"
+  | "internal"
+  | "travel-expenses"
   | "custom"
 
 const FOCUS_MODES: { id: FocusMode; label: string }[] = [
   { id: "all", label: "All" },
   { id: "client-facing", label: "Client-Facing" },
-  { id: "people-sensitive", label: "People & Sensitive" },
-  { id: "travel-logistics", label: "Travel & Logistics" },
+  { id: "internal", label: "Internal" },
+  { id: "travel-expenses", label: "Travel & Expenses" },
   { id: "custom", label: "Custom" },
 ]
 
 const ALL_DOMAINS: Domain[] = [
-  "scheduling",
-  "travel",
-  "correspondence",
-  "expenses",
-  "documents",
-  "people-sensitive",
+  "client-facing",
+  "internal-scheduling",
+  "travel-expenses",
+  "timesheets",
+  "email-triage",
 ]
 
 interface IntentBarProps {

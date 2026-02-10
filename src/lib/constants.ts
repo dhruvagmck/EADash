@@ -2,9 +2,8 @@ import {
   Calendar,
   Plane,
   Mail,
-  Receipt,
-  FileText,
-  Users,
+  Clock,
+  Briefcase,
   Shield,
   Eye,
   Zap,
@@ -15,12 +14,11 @@ import {
 import type { DomainConfig, Domain, NavItem } from "@/data/types"
 
 export const DOMAIN_CONFIG: Record<Domain, DomainConfig> = {
-  scheduling: { label: "Scheduling", icon: Calendar, color: "#3b82f6" },
-  travel: { label: "Travel", icon: Plane, color: "#8b5cf6" },
-  correspondence: { label: "Correspondence", icon: Mail, color: "#06b6d4" },
-  expenses: { label: "Expenses", icon: Receipt, color: "#f59e0b" },
-  documents: { label: "Documents", icon: FileText, color: "#64748b" },
-  "people-sensitive": { label: "People & Sensitive", icon: Users, color: "#ec4899" },
+  "client-facing": { label: "Client-Facing", icon: Briefcase, color: "#6366f1" },
+  "internal-scheduling": { label: "Internal Scheduling", icon: Calendar, color: "#3b82f6" },
+  "travel-expenses": { label: "Travel & Expenses", icon: Plane, color: "#8b5cf6" },
+  timesheets: { label: "Timesheets", icon: Clock, color: "#f59e0b" },
+  "email-triage": { label: "Email Triage", icon: Mail, color: "#06b6d4" },
 }
 
 export const SEVERITY_STYLES = {
@@ -58,10 +56,9 @@ export const NAV_ITEMS: NavItem[] = [
 ]
 
 export const DOMAINS: Domain[] = [
-  "scheduling",
-  "travel",
-  "correspondence",
-  "expenses",
-  "documents",
-  "people-sensitive",
+  "client-facing",
+  "internal-scheduling",
+  "travel-expenses",
+  "timesheets",
+  "email-triage",
 ]
