@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react"
 import PageHeader from "@/components/layout/PageHeader"
 import QueueList from "@/components/supervision/QueueList"
 import SupervisionDetailPanel from "@/components/supervision/SupervisionDetailPanel"
-import PartnerFilterBar from "@/components/supervision/PartnerFilterBar"
+import PartnerFilterBar from "@/components/shared/PartnerFilterBar"
 import {
   useDashboardState,
   useDashboardActions,

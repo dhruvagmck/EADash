@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import PageHeader from "@/components/layout/PageHeader"
 import ExceptionCard from "@/components/exceptions/ExceptionCard"
+import PartnerFilterBar from "@/components/shared/PartnerFilterBar"
 import { useDashboardState, useDashboardActions } from "@/store/DashboardContext"
+import { partners } from "@/data/partners"
 
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -18,6 +20,24 @@ export default function ExceptionsView() {
   const { resolveException, undoResolveException } = useDashboardActions()
   const [banner, setBanner] = useState<ResolutionBanner | null>(null)
   const [undoTimer, setUndoTimer] = useState(60)
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null)
+
+  // Partner counts and filtered exceptions
+  const partnerCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const exc of exceptions) {
+      counts[exc.partnerId] = (counts[exc.partnerId] || 0) + 1
+    }
+    return counts
+  }, [exceptions])
+
+  const filteredExceptions = useMemo(
+    () =>
+      selectedPartnerId
+        ? exceptions.filter((e) => e.partnerId === selectedPartnerId)
+        : exceptions,
+    [exceptions, selectedPartnerId]
+  )
 
   // Count down the undo timer
   useEffect(() => {
@@ -69,6 +89,15 @@ export default function ExceptionsView() {
         subtitle="Synthesized decisions requiring your judgment"
       />
 
+      {/* Partner filter bar */}
+      <PartnerFilterBar
+        partners={partners}
+        selectedPartnerId={selectedPartnerId}
+        onSelectPartner={setSelectedPartnerId}
+        partnerCounts={partnerCounts}
+        totalCount={exceptions.length}
+      />
+
       {/* Resolution confirmation banner */}
       {banner && (
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b bg-green-50 px-6 py-3 dark:bg-green-950">
@@ -97,7 +126,7 @@ export default function ExceptionsView() {
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-5xl space-y-5 p-6">
-          {exceptions.map((exception) => (
+          {filteredExceptions.map((exception) => (
             <ExceptionCard
               key={exception.id}
               exception={exception}
@@ -106,7 +135,7 @@ export default function ExceptionsView() {
           ))}
 
           {/* Empty state */}
-          {exceptions.length === 0 && (
+          {filteredExceptions.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <p className="text-sm font-medium text-muted-foreground">
                 No exceptions require your attention.
