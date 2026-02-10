@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom"
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import ConditionChip from "@/components/shared/ConditionChip"
 import { Info, ExternalLink } from "lucide-react"
 
 interface ExplainabilityBlockProps {
-  item: SupervisionItem
+  item: PendingInputItem
 }
 
 export default function ExplainabilityBlock({

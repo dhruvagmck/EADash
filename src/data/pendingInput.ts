@@ -1,6 +1,6 @@
-import type { SupervisionItem } from "./types"
+import type { PendingInputItem } from "./types"
 
-export const supervisionItems: SupervisionItem[] = [
+export const supervisionItems: PendingInputItem[] = [
   {
     id: "sup-1",
     partnerId: "partner-1",

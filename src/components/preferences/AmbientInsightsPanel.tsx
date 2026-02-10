@@ -64,7 +64,7 @@ export default function AmbientInsightsPanel({
       {acceptedInsights.length > 0 && (
         <div className="rounded-lg border bg-muted/30 p-3">
           <p className="text-xs font-medium text-muted-foreground">
-            {acceptedInsights.length} insight{acceptedInsights.length !== 1 ? "s" : ""} previously accepted
+            {acceptedInsights.length} observation{acceptedInsights.length !== 1 ? "s" : ""} previously accepted
           </p>
           <div className="mt-1.5 space-y-1">
             {acceptedInsights.map((insight) => (

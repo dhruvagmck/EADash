@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { ExceptionItem } from "@/data/types"
+import type { DecisionItem } from "@/data/types"
 import { partners } from "@/data/partners"
 import { EXCEPTION_SEVERITY_STYLES } from "@/lib/constants"
 import SeverityBadge from "@/components/shared/SeverityBadge"
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 import { Clock, ChevronDown, ChevronUp, ShieldCheck } from "lucide-react"
 
 interface ExceptionCardProps {
-  exception: ExceptionItem
+  exception: DecisionItem
   onResolve?: (exceptionId: string, optionId: string, note: string) => void
   onDismissPrediction?: (exceptionId: string) => void
   onPrestagePrediction?: (exceptionId: string) => void

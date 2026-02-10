@@ -1,4 +1,4 @@
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import { partners } from "@/data/partners"
 import DomainIcon from "@/components/shared/DomainIcon"
 import TimeIndicator from "@/components/shared/TimeIndicator"
@@ -9,7 +9,7 @@ import ContextCard from "./ContextCard"
 import SupervisionActionBar from "./SupervisionActionBar"
 
 interface SupervisionDetailPanelProps {
-  item: SupervisionItem | null
+  item: PendingInputItem | null
   onApprove?: (id: string) => void
   onReject?: (id: string) => void
   onEscalate?: (id: string) => void

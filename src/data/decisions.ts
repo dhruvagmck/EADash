@@ -1,8 +1,8 @@
-import type { ExceptionItem } from "./types"
+import type { DecisionItem } from "./types"
 
 // ── Predicted Exceptions (AI-predicted risks that haven't occurred yet) ──
 
-export const predictedExceptions: ExceptionItem[] = [
+export const predictedExceptions: DecisionItem[] = [
   {
     id: "pred-1",
     partnerId: "partner-1",
@@ -86,7 +86,7 @@ export const predictedExceptions: ExceptionItem[] = [
 
 // ── Active Exceptions (situations that have already occurred) ──
 
-export const exceptionItems: ExceptionItem[] = [
+export const exceptionItems: DecisionItem[] = [
   {
     id: "exc-1",
     partnerId: "partner-1",

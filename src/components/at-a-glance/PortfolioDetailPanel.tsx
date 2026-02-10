@@ -18,7 +18,7 @@ import type { SignalBlockData } from "@/data/types"
 import { DOMAIN_CONFIG } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { partners } from "@/data/partners"
-import { useDashboardActions } from "@/store/DashboardContext"
+import { useDashboardActions } from "@/store/DashboardProvider"
 import { toast } from "sonner"
 import {
   Check,

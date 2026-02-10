@@ -127,7 +127,7 @@ export default function AmbientInsightCard({
           className="gap-1 text-xs text-muted-foreground"
           onClick={() => {
             onDismiss?.(insight.id)
-            toast.info("Insight dismissed", {
+            toast.info("Observation dismissed", {
               description: "Won't show again unless pattern changes",
             })
           }}
@@ -140,7 +140,7 @@ export default function AmbientInsightCard({
           className="gap-1 bg-indigo-600 text-xs hover:bg-indigo-700"
           onClick={() => {
             onAccept?.(insight.id)
-            toast.success("Insight accepted", {
+            toast.success("Observation accepted", {
               description: insight.suggestedAction.description,
             })
           }}

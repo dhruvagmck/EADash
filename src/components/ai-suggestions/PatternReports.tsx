@@ -127,7 +127,7 @@ export default function PatternReports({ report }: PatternReportsProps) {
       <Card className="p-5">
         <div className="mb-4 flex items-center gap-2">
           <BarChart3 className="h-4 w-4 text-amber-500" />
-          <h4 className="text-sm font-semibold">Exception Volume</h4>
+          <h4 className="text-sm font-semibold">Decision Volume</h4>
           <span className="text-xs text-muted-foreground">per month</span>
         </div>
         <MiniBarChart

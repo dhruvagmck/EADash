@@ -1,9 +1,9 @@
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import { Card } from "@/components/ui/card"
 import { Mail, Plane, Calendar, Receipt } from "lucide-react"
 
 interface ProposedActionPreviewProps {
-  item: SupervisionItem
+  item: PendingInputItem
 }
 
 const typeIcons = {

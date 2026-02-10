@@ -7,6 +7,8 @@ import { partners } from "@/data/partners"
 import { swimlaneSummaries } from "@/data/partners"
 import { useDashboardState } from "@/store/DashboardProvider"
 import type { SignalBlockData, Severity, Domain } from "@/data/types"
+import { loadSettings } from "@/lib/settings"
+import { Clock } from "lucide-react"
 
 // Map focus modes to the domains they cover
 const FOCUS_DOMAIN_MAP: Record<FocusMode, Domain[] | null> = {
@@ -17,8 +19,27 @@ const FOCUS_DOMAIN_MAP: Record<FocusMode, Domain[] | null> = {
   custom: null, // driven by customDomains state
 }
 
+// Check whether the current time falls outside the user's working hours
+function isOutsideWorkingHours(): boolean {
+  try {
+    const settings = loadSettings()
+    const now = new Date()
+    const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+    const [startH, startM] = settings.workingHours.start.split(":").map(Number)
+    const [endH, endM] = settings.workingHours.end.split(":").map(Number)
+    const startMinutes = startH * 60 + startM
+    const endMinutes = endH * 60 + endM
+
+    return currentMinutes < startMinutes || currentMinutes > endMinutes
+  } catch {
+    return false
+  }
+}
+
 export default function AtAGlance() {
   const { signals: signalBlocks } = useDashboardState()
+  const offHours = useMemo(() => isOutsideWorkingHours(), [])
 
   const [selectedSignal, setSelectedSignal] = useState<SignalBlockData | null>(
     null
@@ -98,7 +119,16 @@ export default function AtAGlance() {
         subtitle="Where your attention needs to go across partners and domains"
       />
 
-      {/* Stale data / error banner (demo — would be driven by WebSocket state) */}
+      {/* Off-hours banner */}
+      {offHours && (
+        <div className="mx-4 mt-2 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+          <Clock className="h-4 w-4 shrink-0" />
+          <span className="font-medium">You're outside working hours.</span>
+          <span className="text-amber-700 dark:text-amber-400">
+            Items below may have arrived while you were away. Adjust working hours in Settings.
+          </span>
+        </div>
+      )}
 
       {/* Zone A: Intent Bar */}
       <IntentBar

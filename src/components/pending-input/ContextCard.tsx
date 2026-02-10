@@ -1,9 +1,9 @@
 import { useState } from "react"
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import { FileText, ChevronDown, ChevronUp } from "lucide-react"
 
 interface ContextCardProps {
-  item: SupervisionItem
+  item: PendingInputItem
 }
 
 export default function ContextCard({ item }: ContextCardProps) {

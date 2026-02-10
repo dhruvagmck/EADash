@@ -695,10 +695,28 @@ export function useDashboardActions() {
   }
 }
 
-/** Badge counts derived from state */
+/** Badge counts derived from state — respects notification preferences from Settings */
 export function useBadgeCounts() {
   const { supervisionItems, exceptionItems, predictedExceptions, adjustments, guidance, signals, ambientInsights } =
     useDashboardState()
+
+  // Load notification preferences from settings
+  let notifications: Record<string, boolean> = {
+    "p1-decisions": true,
+    "all-decisions": false,
+    "stale-should": true,
+    "coverage-gaps": false,
+    "authority-suggestions": false,
+  }
+  try {
+    const raw = localStorage.getItem("ea-hitl-settings")
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (parsed.notifications) notifications = { ...notifications, ...parsed.notifications }
+    }
+  } catch {
+    // ignore
+  }
 
   const portfolioAttention = signals.filter(
     (s) => s.severity === "urgent" || s.severity === "review"
@@ -706,13 +724,29 @@ export function useBadgeCounts() {
 
   const activeInsights = ambientInsights.filter((i) => i.status === "active").length
 
+  // Decision count — filter by notification preferences
+  let decisionBadge = 0
+  if (notifications["p1-decisions"]) {
+    decisionBadge += exceptionItems.filter((e) => e.severity === "P1").length
+    decisionBadge += predictedExceptions.filter((e) => e.severity === "P1").length
+  }
+  if (notifications["all-decisions"]) {
+    // "all-decisions" overrides — show everything
+    decisionBadge = exceptionItems.length + predictedExceptions.length
+  }
+
+  // AI suggestions count — filter by authority-suggestions preference
+  const suggestionsBadge = notifications["authority-suggestions"]
+    ? adjustments.length + guidance.length
+    : guidance.length  // always show proactive guidance, suppress authority adjustments if not enabled
+
   return {
     "/at-a-glance": portfolioAttention,
     "/preferences": activeInsights,
     "/authority": 0,
     "/pending-input": supervisionItems.length,
-    "/decisions": exceptionItems.length + predictedExceptions.length,
-    "/ai-suggestions": adjustments.length + guidance.length,
+    "/decisions": decisionBadge,
+    "/ai-suggestions": suggestionsBadge,
     "/settings": 0,
   } as Record<string, number>
 }

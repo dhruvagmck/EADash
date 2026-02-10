@@ -9,21 +9,36 @@ import {
 } from "@/store/DashboardProvider"
 import { partners } from "@/data/partners"
 import { toast } from "sonner"
+import { loadSettings } from "@/lib/settings"
 
 export default function PendingInputQueue() {
   const { supervisionItems } = useDashboardState()
   const { approveSupervision, rejectSupervision } = useDashboardActions()
+
+  // Load persisted settings for queue sort + shortcuts toggle
+  const settings = useMemo(() => loadSettings(), [])
 
   // Partner filter: null = all partners
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(
     null
   )
 
-  // Sort items by time-sensitivity (most urgent = lowest minutesAgo first)
-  const sortedItems = useMemo(
-    () => [...supervisionItems].sort((a, b) => a.minutesAgo - b.minutesAgo),
-    [supervisionItems]
-  )
+  // Sort items according to user's queue sort preference
+  const sortedItems = useMemo(() => {
+    const items = [...supervisionItems]
+    switch (settings.queueSort) {
+      case "by-partner":
+        return items.sort((a, b) => a.partnerId.localeCompare(b.partnerId))
+      case "by-domain":
+        return items.sort((a, b) => a.domain.localeCompare(b.domain))
+      case "by-confidence":
+        // Lower minutesAgo → more urgent; use as proxy for confidence ordering
+        return items.sort((a, b) => b.minutesAgo - a.minutesAgo)
+      case "time-sensitive":
+      default:
+        return items.sort((a, b) => a.minutesAgo - b.minutesAgo)
+    }
+  }, [supervisionItems, settings.queueSort])
 
   // Filter by selected partner
   const filteredItems = useMemo(
@@ -118,9 +133,11 @@ export default function PendingInputQueue() {
     })
   }, [filteredItems, approveSupervision])
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts (respects settings toggle)
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      if (!settings.shortcutsEnabled) return
+
       const tag = (e.target as HTMLElement).tagName
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return
 
@@ -154,6 +171,7 @@ export default function PendingInputQueue() {
       }
     },
     [
+      settings.shortcutsEnabled,
       selectedIndex,
       filteredItems,
       selectedItem,

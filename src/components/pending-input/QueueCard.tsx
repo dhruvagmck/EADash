@@ -1,4 +1,4 @@
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import { partners } from "@/data/partners"
 import DomainIcon from "@/components/shared/DomainIcon"
 import TimeIndicator from "@/components/shared/TimeIndicator"
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
 
 interface QueueCardProps {
-  item: SupervisionItem
+  item: PendingInputItem
   isSelected: boolean
   onClick: () => void
   onApprove?: () => void

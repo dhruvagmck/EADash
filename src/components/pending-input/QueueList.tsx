@@ -1,12 +1,12 @@
 import { useMemo } from "react"
-import type { SupervisionItem } from "@/data/types"
+import type { PendingInputItem } from "@/data/types"
 import { partners } from "@/data/partners"
 import QueueCard from "./QueueCard"
 import { Button } from "@/components/ui/button"
 import { CheckSquare } from "lucide-react"
 
 interface QueueListProps {
-  items: SupervisionItem[]
+  items: PendingInputItem[]
   selectedId: string | null
   onSelect: (id: string) => void
   onApprove?: (id: string) => void
@@ -26,7 +26,7 @@ export default function QueueList({
   // Group items by partner when viewing all
   const groupedItems = useMemo(() => {
     if (selectedPartnerId) return null // not needed for single-partner view
-    const groups: { partner: (typeof partners)[number]; items: SupervisionItem[] }[] = []
+    const groups: { partner: (typeof partners)[number]; items: PendingInputItem[] }[] = []
     for (const partner of partners) {
       const partnerItems = items.filter((i) => i.partnerId === partner.id)
       if (partnerItems.length > 0) {
