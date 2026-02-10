@@ -71,7 +71,7 @@ export default function InsightsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
-        title="Insights"
+        title="AI Suggestions"
         subtitle="Patterns, suggestions, and performance trends"
       />
 

@@ -22,8 +22,13 @@ export default function PartnerProfileView() {
     updateEscalationNotes,
     addVIPContact,
     removeVIPContact,
+    confirmVIPContact,
+    dismissVIPContact,
     addCommitment,
     removeCommitment,
+    confirmCommitment,
+    dismissCommitment,
+    updateStructuredPrefs,
   } = useDashboardActions()
 
   // Count preferences + notes per partner for the filter bar badges
@@ -45,8 +50,8 @@ export default function PartnerProfileView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
-        title="Partner Profiles"
-        subtitle="Desk notes, preferences, and handoff context for each partner"
+        title="Preferences"
+        subtitle="Preferences, contacts, and handoff context for each partner"
       />
 
       {/* Partner filter bar — no "All" since profiles are per-partner */}
@@ -85,9 +90,24 @@ export default function PartnerProfileView() {
             onRemoveVIPContact={(name) =>
               removeVIPContact(effectiveId, name)
             }
+            onConfirmVIPContact={(name) =>
+              confirmVIPContact(effectiveId, name)
+            }
+            onDismissVIPContact={(name) =>
+              dismissVIPContact(effectiveId, name)
+            }
             onAddCommitment={(c) => addCommitment(effectiveId, c)}
             onRemoveCommitment={(title) =>
               removeCommitment(effectiveId, title)
+            }
+            onConfirmCommitment={(title) =>
+              confirmCommitment(effectiveId, title)
+            }
+            onDismissCommitment={(title) =>
+              dismissCommitment(effectiveId, title)
+            }
+            onUpdateStructured={(patch) =>
+              updateStructuredPrefs(effectiveId, patch)
             }
           />
         ) : (

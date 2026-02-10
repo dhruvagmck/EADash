@@ -4,6 +4,11 @@ import { Button } from "@/components/ui/button"
 import type {
   PartnerProfile,
   PartnerPreference,
+  StructuredPreferences,
+  TravelPreferences,
+  SchedulingPreferences,
+  CommunicationPreferences,
+  ExpensePreferences,
   Partner,
   AuthorityRule,
   DeskNote,
@@ -12,7 +17,8 @@ import type {
 } from "@/data/types"
 import PartnerAvatar from "@/components/shared/PartnerAvatar"
 import AuthoritySummaryBar from "@/components/authority/AuthoritySummaryBar"
-import PreferenceSection from "./PreferenceSection"
+import StructuredPreferenceSection from "./StructuredPreferenceSection"
+import TimesheetTracker from "./TimesheetTracker"
 import VIPContactList from "./VIPContactList"
 import CommitmentList from "./CommitmentList"
 import DeskNoteLog from "./DeskNoteLog"
@@ -26,6 +32,7 @@ import {
   Shield,
   ArrowRightLeft,
   ExternalLink,
+  Clock,
 } from "lucide-react"
 
 interface ProfileContentProps {
@@ -39,8 +46,18 @@ interface ProfileContentProps {
   onUpdateEscalation: (text: string) => void
   onAddVIPContact: (contact: VIPContact) => void
   onRemoveVIPContact: (name: string) => void
+  onConfirmVIPContact?: (name: string) => void
+  onDismissVIPContact?: (name: string) => void
   onAddCommitment: (commitment: RecurringCommitment) => void
   onRemoveCommitment: (title: string) => void
+  onConfirmCommitment?: (title: string) => void
+  onDismissCommitment?: (title: string) => void
+  onUpdateStructured: (patch: Partial<{
+    travel: Partial<TravelPreferences>
+    scheduling: Partial<SchedulingPreferences>
+    communication: Partial<CommunicationPreferences>
+    expenses: Partial<ExpensePreferences>
+  }>) => void
 }
 
 export default function ProfileContent({
@@ -54,8 +71,13 @@ export default function ProfileContent({
   onUpdateEscalation,
   onAddVIPContact,
   onRemoveVIPContact,
+  onConfirmVIPContact,
+  onDismissVIPContact,
   onAddCommitment,
   onRemoveCommitment,
+  onConfirmCommitment,
+  onDismissCommitment,
+  onUpdateStructured,
 }: ProfileContentProps) {
   const navigate = useNavigate()
   const partnerRules = rules.filter((r) => r.partnerId === partner.id)
@@ -64,6 +86,14 @@ export default function ProfileContent({
   const unlinkedPrefs = profile.preferences.filter(
     (p) => p.linkedRuleIds.length === 0
   )
+
+  // Count suggested items for badges
+  const suggestedContacts = profile.vipContacts.filter(
+    (c) => c.status === "suggested"
+  ).length
+  const suggestedCommitments = profile.recurringCommitments.filter(
+    (c) => c.status === "suggested"
+  ).length
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col space-y-4">
@@ -97,23 +127,28 @@ export default function ProfileContent({
           <TabsTrigger value="preferences" className="gap-1.5 text-xs">
             <Heart className="h-3.5 w-3.5" />
             Preferences
-            <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-              {profile.preferences.length}
-            </span>
+          </TabsTrigger>
+          <TabsTrigger value="timesheets" className="gap-1.5 text-xs">
+            <Clock className="h-3.5 w-3.5" />
+            Utilization
           </TabsTrigger>
           <TabsTrigger value="people" className="gap-1.5 text-xs">
             <Users className="h-3.5 w-3.5" />
             Key People
-            <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-              {profile.vipContacts.length}
-            </span>
+            {suggestedContacts > 0 && (
+              <span className="ml-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400">
+                {suggestedContacts} new
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="commitments" className="gap-1.5 text-xs">
             <CalendarClock className="h-3.5 w-3.5" />
             Commitments
-            <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-              {profile.recurringCommitments.length}
-            </span>
+            {suggestedCommitments > 0 && (
+              <span className="ml-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400">
+                {suggestedCommitments} new
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="notes" className="gap-1.5 text-xs">
             <StickyNote className="h-3.5 w-3.5" />
@@ -138,10 +173,22 @@ export default function ProfileContent({
           className="min-h-0 flex-1 overflow-y-auto"
         >
           <div className="pr-4">
-            <PreferenceSection
-              preferences={profile.preferences}
-              onAdd={onUpdatePreference}
+            <StructuredPreferenceSection
+              structured={profile.structuredPreferences}
+              freeTextPreferences={profile.preferences}
+              onAddPreference={onUpdatePreference}
+              onUpdateStructured={onUpdateStructured}
             />
+          </div>
+        </TabsContent>
+
+        {/* Timesheets Tab */}
+        <TabsContent
+          value="timesheets"
+          className="min-h-0 flex-1 overflow-y-auto"
+        >
+          <div className="pr-4">
+            <TimesheetTracker data={profile.timesheetData} />
           </div>
         </TabsContent>
 
@@ -155,6 +202,8 @@ export default function ProfileContent({
               contacts={profile.vipContacts}
               onAdd={onAddVIPContact}
               onRemove={onRemoveVIPContact}
+              onConfirm={onConfirmVIPContact}
+              onDismiss={onDismissVIPContact}
             />
           </div>
         </TabsContent>
@@ -169,6 +218,8 @@ export default function ProfileContent({
               commitments={profile.recurringCommitments}
               onAdd={onAddCommitment}
               onRemove={onRemoveCommitment}
+              onConfirm={onConfirmCommitment}
+              onDismiss={onDismissCommitment}
             />
           </div>
         </TabsContent>
@@ -244,7 +295,7 @@ export default function ProfileContent({
               </div>
             )}
 
-            {/* Link to Authority Editor */}
+            {/* Link to Authority */}
             <Button
               variant="outline"
               className="w-full gap-2"

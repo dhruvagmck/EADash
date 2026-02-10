@@ -14,6 +14,7 @@ import type {
   SignalBlockData,
   PartnerProfile,
   PartnerPreference,
+  StructuredPreferences,
   DeskNote,
   VIPContact,
   RecurringCommitment,
@@ -46,8 +47,18 @@ type Action =
   | { type: "UPDATE_ESCALATION_NOTES"; partnerId: string; text: string }
   | { type: "ADD_VIP_CONTACT"; partnerId: string; contact: VIPContact }
   | { type: "REMOVE_VIP_CONTACT"; partnerId: string; contactName: string }
+  | { type: "CONFIRM_VIP_CONTACT"; partnerId: string; contactName: string }
+  | { type: "DISMISS_VIP_CONTACT"; partnerId: string; contactName: string }
   | { type: "ADD_COMMITMENT"; partnerId: string; commitment: RecurringCommitment }
   | { type: "REMOVE_COMMITMENT"; partnerId: string; commitmentTitle: string }
+  | { type: "CONFIRM_COMMITMENT"; partnerId: string; commitmentTitle: string }
+  | { type: "DISMISS_COMMITMENT"; partnerId: string; commitmentTitle: string }
+  | { type: "UPDATE_STRUCTURED_PREFS"; partnerId: string; patch: Partial<{
+      travel: Partial<StructuredPreferences["travel"]>
+      scheduling: Partial<StructuredPreferences["scheduling"]>
+      communication: Partial<StructuredPreferences["communication"]>
+      expenses: Partial<StructuredPreferences["expenses"]>
+    }> }
 
 // ── State ──
 
@@ -308,6 +319,110 @@ function reducer(state: DashboardState, action: Action): DashboardState {
       }
     }
 
+    case "CONFIRM_VIP_CONTACT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            vipContacts: p.vipContacts.map((c) =>
+              c.name === action.contactName
+                ? { ...c, status: "confirmed" as const, source: "outlook-confirmed" as const }
+                : c
+            ),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "DISMISS_VIP_CONTACT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            vipContacts: p.vipContacts.map((c) =>
+              c.name === action.contactName
+                ? { ...c, status: "dismissed" as const }
+                : c
+            ),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "CONFIRM_COMMITMENT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            recurringCommitments: p.recurringCommitments.map((c) =>
+              c.title === action.commitmentTitle
+                ? { ...c, status: "confirmed" as const, source: "calendar-confirmed" as const, confidence: 1 }
+                : c
+            ),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "DISMISS_COMMITMENT": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => ({
+            ...p,
+            recurringCommitments: p.recurringCommitments.map((c) =>
+              c.title === action.commitmentTitle
+                ? { ...c, status: "dismissed" as const }
+                : c
+            ),
+            lastUpdated: "Just now",
+            lastUpdatedBy: "You",
+          })
+        ),
+      }
+    }
+
+    case "UPDATE_STRUCTURED_PREFS": {
+      return {
+        ...state,
+        partnerProfiles: updateProfile(
+          state.partnerProfiles,
+          action.partnerId,
+          (p) => {
+            const sp = p.structuredPreferences
+            return {
+              ...p,
+              structuredPreferences: {
+                travel: { ...sp.travel, ...(action.patch.travel || {}) },
+                scheduling: { ...sp.scheduling, ...(action.patch.scheduling || {}) },
+                communication: { ...sp.communication, ...(action.patch.communication || {}) },
+                expenses: { ...sp.expenses, ...(action.patch.expenses || {}) },
+              },
+              lastUpdated: "Just now",
+              lastUpdatedBy: "You",
+            }
+          }
+        ),
+      }
+    }
+
     default:
       return state
   }
@@ -442,6 +557,40 @@ export function useDashboardActions() {
     [dispatch]
   )
 
+  const confirmVIPContact = useCallback(
+    (partnerId: string, contactName: string) =>
+      dispatch({ type: "CONFIRM_VIP_CONTACT", partnerId, contactName }),
+    [dispatch]
+  )
+
+  const dismissVIPContact = useCallback(
+    (partnerId: string, contactName: string) =>
+      dispatch({ type: "DISMISS_VIP_CONTACT", partnerId, contactName }),
+    [dispatch]
+  )
+
+  const confirmCommitment = useCallback(
+    (partnerId: string, commitmentTitle: string) =>
+      dispatch({ type: "CONFIRM_COMMITMENT", partnerId, commitmentTitle }),
+    [dispatch]
+  )
+
+  const dismissCommitment = useCallback(
+    (partnerId: string, commitmentTitle: string) =>
+      dispatch({ type: "DISMISS_COMMITMENT", partnerId, commitmentTitle }),
+    [dispatch]
+  )
+
+  const updateStructuredPrefs = useCallback(
+    (partnerId: string, patch: Partial<{
+      travel: Partial<StructuredPreferences["travel"]>
+      scheduling: Partial<StructuredPreferences["scheduling"]>
+      communication: Partial<StructuredPreferences["communication"]>
+      expenses: Partial<StructuredPreferences["expenses"]>
+    }>) => dispatch({ type: "UPDATE_STRUCTURED_PREFS", partnerId, patch }),
+    [dispatch]
+  )
+
   return {
     approveSupervision,
     rejectSupervision,
@@ -458,8 +607,13 @@ export function useDashboardActions() {
     updateEscalationNotes,
     addVIPContact,
     removeVIPContact,
+    confirmVIPContact,
+    dismissVIPContact,
     addCommitment,
     removeCommitment,
+    confirmCommitment,
+    dismissCommitment,
+    updateStructuredPrefs,
   }
 }
 

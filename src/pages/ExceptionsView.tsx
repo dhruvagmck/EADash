@@ -85,8 +85,8 @@ export default function ExceptionsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
-        title="Exceptions"
-        subtitle="Decisions requiring your judgment"
+        title="Decisions"
+        subtitle="Situations requiring your judgment"
       />
 
       {/* Partner filter bar */}
