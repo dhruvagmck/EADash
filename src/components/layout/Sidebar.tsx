@@ -2,8 +2,8 @@ import { NavLink } from "react-router-dom"
 import { NAV_ITEMS } from "@/lib/constants"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/lib/theme"
-import { useBadgeCounts } from "@/store/DashboardContext"
+import { useTheme } from "@/lib/ThemeProvider"
+import { useBadgeCounts } from "@/store/DashboardProvider"
 import {
   Sun,
   Moon,

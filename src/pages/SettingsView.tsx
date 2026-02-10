@@ -71,8 +71,8 @@ function saveSettings(settings: PersistedSettings) {
 // ── Component ──
 
 const NOTIFICATION_OPTIONS = [
-  { id: "p1-exceptions", label: "P1 exceptions" },
-  { id: "all-exceptions", label: "All exceptions" },
+  { id: "p1-decisions", label: "P1 decisions" },
+  { id: "all-decisions", label: "All decisions" },
   { id: "stale-should", label: "SHOULD items stale > 2 hours" },
   { id: "coverage-gaps", label: "Coverage gaps" },
   { id: "authority-suggestions", label: "Authority adjustment suggestions" },

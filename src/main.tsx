@@ -1,31 +1,31 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
-import { ThemeProvider } from "@/lib/theme"
-import { DashboardProvider } from "@/store/DashboardContext"
+import { ThemeProvider } from "@/lib/ThemeProvider"
+import { DashboardProvider } from "@/store/DashboardProvider"
 import { Toaster } from "sonner"
 import "./index.css"
 
 import AppShell from "@/components/layout/AppShell"
-import PortfolioDashboard from "@/pages/PortfolioDashboard"
+import AtAGlance from "@/pages/AtAGlance"
 import AuthorityEditor from "@/pages/AuthorityEditor"
-import SupervisionQueue from "@/pages/SupervisionQueue"
-import ExceptionsView from "@/pages/ExceptionsView"
-import InsightsView from "@/pages/InsightsView"
+import PendingInputQueue from "@/pages/PendingInputQueue"
+import DecisionsView from "@/pages/DecisionsView"
+import AISuggestionsView from "@/pages/AISuggestionsView"
 import SettingsView from "@/pages/SettingsView"
-import PartnerProfileView from "@/pages/PartnerProfileView"
+import PreferencesView from "@/pages/PreferencesView"
 
 const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { index: true, element: <Navigate to="/portfolio" replace /> },
-      { path: "portfolio", element: <PortfolioDashboard /> },
-      { path: "partners", element: <PartnerProfileView /> },
+      { index: true, element: <Navigate to="/at-a-glance" replace /> },
+      { path: "at-a-glance", element: <AtAGlance /> },
+      { path: "preferences", element: <PreferencesView /> },
       { path: "authority", element: <AuthorityEditor /> },
-      { path: "supervision", element: <SupervisionQueue /> },
-      { path: "exceptions", element: <ExceptionsView /> },
-      { path: "insights", element: <InsightsView /> },
+      { path: "pending-input", element: <PendingInputQueue /> },
+      { path: "decisions", element: <DecisionsView /> },
+      { path: "ai-suggestions", element: <AISuggestionsView /> },
       { path: "settings", element: <SettingsView /> },
     ],
   },

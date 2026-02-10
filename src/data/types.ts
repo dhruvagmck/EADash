@@ -41,7 +41,7 @@ export interface SwimlaneSummaryData {
   exceptionCount: number
 }
 
-export interface SupervisionItem {
+export interface PendingInputItem {
   id: string
   partnerId: string
   domain: Domain
@@ -79,7 +79,7 @@ export interface PredictionMetadata {
   preStaged?: boolean         // has the EA pre-staged a response?
 }
 
-export interface ExceptionItem {
+export interface DecisionItem {
   id: string
   partnerId: string
   title: string

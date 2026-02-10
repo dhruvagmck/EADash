@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Clock, Zap, Heart, ChevronDown, ChevronUp } from "lucide-react"
-import { useDashboardState } from "@/store/DashboardContext"
+import { useDashboardState } from "@/store/DashboardProvider"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
@@ -58,7 +58,7 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
           {/* Source Preference Annotation */}
           {linkedPrefs.length > 0 && (
             <button
-              onClick={() => navigate("/partners")}
+              onClick={() => navigate("/preferences")}
               className="flex items-start gap-1.5 rounded-md border border-indigo-100 bg-indigo-50/50 px-2.5 py-1.5 text-left transition-colors hover:bg-indigo-100/70 dark:border-indigo-900 dark:bg-indigo-950/30 dark:hover:bg-indigo-950/50"
             >
               <Heart className="mt-0.5 h-3 w-3 shrink-0 text-indigo-500" />

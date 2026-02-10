@@ -48,12 +48,12 @@ export const CONFIDENCE_STYLES = {
 } as const
 
 export const NAV_ITEMS: NavItem[] = [
-  { path: "/portfolio", label: "At a Glance", icon: LayoutDashboard, badge: 0 },
-  { path: "/partners", label: "Preferences", icon: Users, badge: 0 },
+  { path: "/at-a-glance", label: "At a Glance", icon: LayoutDashboard, badge: 0 },
+  { path: "/preferences", label: "Preferences", icon: Users, badge: 0 },
   { path: "/authority", label: "Authority", icon: Shield, badge: 0 },
-  { path: "/supervision", label: "Pending Input", icon: Eye, badge: 0 },
-  { path: "/exceptions", label: "Decisions", icon: Zap, badge: 0 },
-  { path: "/insights", label: "AI Suggestions", icon: Lightbulb, badge: 0 },
+  { path: "/pending-input", label: "Pending Input", icon: Eye, badge: 0 },
+  { path: "/decisions", label: "Decisions", icon: Zap, badge: 0 },
+  { path: "/ai-suggestions", label: "AI Suggestions", icon: Lightbulb, badge: 0 },
   { path: "/settings", label: "Settings", icon: Settings, badge: 0 },
 ]
 
