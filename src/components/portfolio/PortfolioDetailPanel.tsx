@@ -6,6 +6,12 @@ import {
 } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import DomainIcon from "@/components/shared/DomainIcon"
 import SeverityBadge from "@/components/shared/SeverityBadge"
 import type { SignalBlockData } from "@/data/types"
@@ -16,11 +22,11 @@ import { useDashboardActions } from "@/store/DashboardContext"
 import { toast } from "sonner"
 import {
   Check,
-  Pencil,
-  ExternalLink,
   X,
+  MoreHorizontal,
   Clock,
   ArrowUpRight,
+  ExternalLink,
 } from "lucide-react"
 
 interface PortfolioDetailPanelProps {
@@ -110,22 +116,13 @@ export default function PortfolioDetailPanel({
                 >
                   {item}
                 </p>
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <div className="mt-2 flex items-center gap-1.5">
                   <Button
                     size="sm"
-                    variant="outline"
-                    className="h-7 gap-1 text-xs text-green-700 dark:text-green-400"
+                    className="h-7 gap-1 bg-green-600 text-xs hover:bg-green-700"
                     onClick={() => handleApprove(i)}
                   >
                     <Check className="h-3 w-3" /> Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 gap-1 text-xs"
-                    onClick={() => handleApprove(i)}
-                  >
-                    <Pencil className="h-3 w-3" /> Modify
                   </Button>
                   <Button
                     size="sm"
@@ -135,32 +132,36 @@ export default function PortfolioDetailPanel({
                   >
                     <X className="h-3 w-3" /> Reject
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 gap-1 text-xs text-muted-foreground"
-                    onClick={() => handleSnooze(i)}
-                  >
-                    <Clock className="h-3 w-3" /> Snooze
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 gap-1 text-xs text-muted-foreground"
-                    onClick={() => handleEscalate(i)}
-                  >
-                    <ArrowUpRight className="h-3 w-3" /> Escalate
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 gap-1 text-xs text-muted-foreground"
-                    onClick={() =>
-                      toast.info("Opening in external system...")
-                    }
-                  >
-                    <ExternalLink className="h-3 w-3" /> Open
-                  </Button>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 w-7 p-0 text-muted-foreground"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleSnooze(i)}>
+                        <Clock className="mr-2 h-3.5 w-3.5" />
+                        Snooze 1 hour
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEscalate(i)}>
+                        <ArrowUpRight className="mr-2 h-3.5 w-3.5" />
+                        Escalate to Partner
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          toast.info("Opening in external system...")
+                        }
+                      >
+                        <ExternalLink className="mr-2 h-3.5 w-3.5" />
+                        Open in source system
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             )
@@ -168,8 +169,7 @@ export default function PortfolioDetailPanel({
 
           {signal.detailItems.length === 0 && (
             <p className="py-6 text-center text-sm text-muted-foreground">
-              No items need your attention. All automations running within
-              authority.
+              No items need your attention.
             </p>
           )}
         </div>

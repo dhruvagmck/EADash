@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { AuthorityRule, AuthorityLevel } from "@/data/types"
 import AuthorityToggle from "@/components/shared/AuthorityToggle"
 import ConditionChip from "@/components/shared/ConditionChip"
@@ -11,9 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Clock, Zap, Heart } from "lucide-react"
+import { Clock, Zap, Heart, ChevronDown, ChevronUp } from "lucide-react"
 import { useDashboardState } from "@/store/DashboardContext"
 import { useNavigate } from "react-router-dom"
+import { cn } from "@/lib/utils"
 
 interface RuleCardProps {
   rule: AuthorityRule
@@ -23,6 +25,7 @@ interface RuleCardProps {
 export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
   const { partnerProfiles } = useDashboardState()
   const navigate = useNavigate()
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   // Find preferences linked to this rule
   const profile = partnerProfiles.find((p) => p.partnerId === rule.partnerId)
@@ -32,10 +35,13 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
       )
     : []
 
+  const hasDetails =
+    rule.overrideHistory.length > 0 || rule.triggerCount30d > 0
+
   return (
     <Card className="gap-0 p-4">
       <div className="flex items-start gap-4">
-        {/* Authority Toggle — now interactive */}
+        {/* Authority Toggle */}
         <AuthorityToggle
           level={rule.level}
           onChange={
@@ -56,7 +62,10 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
               <Heart className="mt-0.5 h-3 w-3 shrink-0 text-indigo-500" />
               <div className="min-w-0">
                 {linkedPrefs.map((pref) => (
-                  <p key={pref.id} className="text-[11px] leading-snug text-indigo-700 dark:text-indigo-300">
+                  <p
+                    key={pref.id}
+                    className="text-[11px] leading-snug text-indigo-700 dark:text-indigo-300"
+                  >
                     {pref.text}
                   </p>
                 ))}
@@ -73,45 +82,69 @@ export default function RuleCard({ rule, onLevelChange }: RuleCardProps) {
             </div>
           )}
 
-          {/* Escalation Override — now a dropdown */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Escalation:</span>
-            <Select defaultValue={rule.escalationBehavior}>
-              <SelectTrigger className="h-7 w-56 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Hold for review">Hold for review</SelectItem>
-                <SelectItem value="Hold and notify via Teams">
-                  Hold and notify via Teams
-                </SelectItem>
-                <SelectItem value="Hold and notify via email">
-                  Hold and notify via email
-                </SelectItem>
-                <SelectItem value="Block silently">Block silently</SelectItem>
-                <SelectItem value="Block and notify EA">
-                  Block and notify EA
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Stats */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              Last triggered: {rule.lastTriggered}
-            </span>
+          {/* Compact stats line + expand toggle */}
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <Zap className="h-3 w-3" />
-              {rule.triggerCount30d}x in 30d
+              {rule.triggerCount30d}x / 30d
             </span>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {rule.lastTriggered}
+            </span>
+            {hasDetails && (
+              <button
+                onClick={() => setDetailsOpen(!detailsOpen)}
+                className="ml-auto inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground"
+              >
+                {detailsOpen ? "Less" : "Details"}
+                {detailsOpen ? (
+                  <ChevronUp className="h-3 w-3" />
+                ) : (
+                  <ChevronDown className="h-3 w-3" />
+                )}
+              </button>
+            )}
           </div>
 
-          {/* Override History */}
-          <OverrideHistory entries={rule.overrideHistory} />
+          {/* Collapsible details */}
+          {detailsOpen && (
+            <div className="space-y-2 border-t pt-2">
+              {/* Escalation Override */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  Escalation:
+                </span>
+                <Select defaultValue={rule.escalationBehavior}>
+                  <SelectTrigger className="h-7 w-56 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Hold for review">
+                      Hold for review
+                    </SelectItem>
+                    <SelectItem value="Hold and notify via Teams">
+                      Hold and notify via Teams
+                    </SelectItem>
+                    <SelectItem value="Hold and notify via email">
+                      Hold and notify via email
+                    </SelectItem>
+                    <SelectItem value="Block silently">
+                      Block silently
+                    </SelectItem>
+                    <SelectItem value="Block and notify EA">
+                      Block and notify EA
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {/* Suggested Adjustment */}
+              {/* Override History */}
+              <OverrideHistory entries={rule.overrideHistory} />
+            </div>
+          )}
+
+          {/* Suggested Adjustment — always visible */}
           {rule.suggestedAdjustment && (
             <SuggestedAdjustment suggestion={rule.suggestedAdjustment} />
           )}

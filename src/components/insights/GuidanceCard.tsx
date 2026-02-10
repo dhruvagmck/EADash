@@ -19,14 +19,6 @@ const typeIcons = {
   relationship_nudge: UserCheck,
 }
 
-const typeLabels = {
-  recovery_buffer: "Recovery Buffer",
-  colocation: "Co-location",
-  logistics: "Logistics Optimization",
-  preference_learning: "Preference Learning",
-  relationship_nudge: "Relationship Nudge",
-}
-
 const typeBorder = {
   recovery_buffer: "border-l-blue-500",
   colocation: "border-l-violet-500",
@@ -60,21 +52,16 @@ export default function GuidanceCard({
   return (
     <Card className={`border-l-4 p-4 ${typeBorder[guidance.type]}`}>
       <div className="flex items-start gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <Icon className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <div className="flex-1 min-w-0">
+        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-              {typeLabels[guidance.type]}
-            </span>
             {partner && <PartnerAvatar partner={partner} size="sm" />}
           </div>
-          <h4 className="mt-1.5 text-sm font-semibold">{guidance.title}</h4>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          <h4 className="mt-1 text-sm font-semibold">{guidance.title}</h4>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
             {guidance.description}
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             {guidance.actions.map((action) => (
               <Button
                 key={action.label}

@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
-import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { Shield, Clock, SlidersHorizontal } from "lucide-react"
+import { Shield, Clock } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { Severity, Domain } from "@/data/types"
 import { DOMAIN_CONFIG } from "@/lib/constants"
@@ -60,17 +59,13 @@ export default function IntentBar({
 }: IntentBarProps) {
   const [protectedEndTime, setProtectedEndTime] = useState<Date | null>(null)
   const [countdown, setCountdown] = useState("")
-  const [protectedHours, setProtectedHours] = useState(2)
   const [customPickerOpen, setCustomPickerOpen] = useState(false)
 
-  const startProtectedWindow = useCallback(
-    (hours: number) => {
-      const end = new Date(Date.now() + hours * 60 * 60 * 1000)
-      setProtectedEndTime(end)
-      onProtectedWindowChange(true)
-    },
-    [onProtectedWindowChange]
-  )
+  const startProtectedWindow = useCallback(() => {
+    const end = new Date(Date.now() + 2 * 60 * 60 * 1000) // 2h default
+    setProtectedEndTime(end)
+    onProtectedWindowChange(true)
+  }, [onProtectedWindowChange])
 
   const stopProtectedWindow = useCallback(() => {
     setProtectedEndTime(null)
@@ -97,7 +92,7 @@ export default function IntentBar({
 
   const handleProtectedToggle = (checked: boolean) => {
     if (checked) {
-      startProtectedWindow(protectedHours)
+      startProtectedWindow()
     } else {
       stopProtectedWindow()
     }
@@ -146,46 +141,34 @@ export default function IntentBar({
 
   return (
     <div className="shrink-0 space-y-0 border-b bg-muted/50">
-      {/* Main controls row — wraps on narrow screens */}
+      {/* Main controls row */}
       <div className="flex flex-wrap items-center gap-3 px-6 py-3">
         {/* Focus Mode Selector */}
-        <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
-          {FOCUS_MODES.map((mode) =>
-            mode.id === "custom" ? (
-              <button
-                key={mode.id}
-                onClick={handleCustomModeClick}
-                className={cn(
-                  "flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-                  activeMode === mode.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <SlidersHorizontal className="h-3 w-3" />
-                {mode.label}
-              </button>
-            ) : (
-              <button
-                key={mode.id}
-                onClick={() => {
+        <div className="flex items-center gap-0.5 rounded-lg border bg-card p-0.5">
+          {FOCUS_MODES.map((mode) => (
+            <button
+              key={mode.id}
+              onClick={() => {
+                if (mode.id === "custom") {
+                  handleCustomModeClick()
+                } else {
                   onModeChange(mode.id)
                   setCustomPickerOpen(false)
-                }}
-                className={cn(
-                  "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-                  activeMode === mode.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {mode.label}
-              </button>
-            )
-          )}
+                }
+              }}
+              className={cn(
+                "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
+                activeMode === mode.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {mode.label}
+            </button>
+          ))}
         </div>
 
-        {/* Priority Bands — clickable to filter */}
+        {/* Severity filter pills */}
         <div className="flex items-center gap-2">
           {severityPills.map((pill) => (
             <button
@@ -204,7 +187,7 @@ export default function IntentBar({
                     "ring-2 ring-ring ring-offset-1"
                 )}
               >
-                <span className="mr-1 font-bold">{pill.count}</span>{" "}
+                <span className="mr-1 font-bold">{pill.count}</span>
                 {pill.label}
               </Badge>
             </button>
@@ -219,7 +202,7 @@ export default function IntentBar({
           )}
         </div>
 
-        {/* Protected Window — pushed right */}
+        {/* Protected Window — simplified */}
         <div className="ml-auto flex items-center gap-2">
           <Shield
             className={cn(
@@ -227,27 +210,16 @@ export default function IntentBar({
               protectedWindow ? "text-amber-500" : "text-muted-foreground"
             )}
           />
-          <span className="text-xs text-muted-foreground whitespace-nowrap">Protected</span>
-          {!protectedWindow && (
-            <Input
-              type="number"
-              min={1}
-              max={8}
-              value={protectedHours}
-              onChange={(e) => setProtectedHours(Number(e.target.value) || 2)}
-              className="h-6 w-12 px-1.5 text-center text-xs"
-            />
-          )}
-          {!protectedWindow && (
-            <span className="text-[11px] text-muted-foreground">hrs</span>
-          )}
+          <span className="whitespace-nowrap text-xs text-muted-foreground">
+            Protected
+          </span>
           <Switch
             checked={protectedWindow}
             onCheckedChange={handleProtectedToggle}
             className="data-[state=checked]:bg-amber-500"
           />
           {protectedWindow && countdown && (
-            <span className="flex items-center gap-1 text-xs font-medium whitespace-nowrap text-amber-600 dark:text-amber-400">
+            <span className="flex items-center gap-1 whitespace-nowrap text-xs font-medium text-amber-600 dark:text-amber-400">
               <Clock className="h-3 w-3 shrink-0" />
               {countdown}
             </span>
@@ -260,7 +232,7 @@ export default function IntentBar({
         <div className="flex items-center gap-2 border-t bg-amber-50 px-6 py-2 dark:bg-amber-950/50">
           <Shield className="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
           <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
-            Protected window active — only urgent items shown.
+            Protected window — only urgent items shown
           </span>
         </div>
       )}
@@ -282,11 +254,9 @@ export default function IntentBar({
                   checked={customDomains.includes(domain)}
                   onCheckedChange={() => toggleCustomDomain(domain)}
                 />
-                <config.icon
-                  className="h-3.5 w-3.5 shrink-0"
-                  style={{ color: config.color }}
-                />
-                <span className="text-xs whitespace-nowrap">{config.label}</span>
+                <span className="whitespace-nowrap text-xs">
+                  {config.label}
+                </span>
               </label>
             )
           })}
