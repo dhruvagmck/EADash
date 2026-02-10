@@ -21,6 +21,7 @@ export interface Partner {
   coverageStatus: "active" | "coverage" | "no-coverage"
   coverageName?: string
   colorAccent: string
+  avatarUrl?: string
 }
 
 export interface SignalBlockData {
@@ -70,6 +71,14 @@ export interface ResolutionOption {
   confidence: ConfidenceLevel
 }
 
+export interface PredictionMetadata {
+  probability: number         // 0.0–1.0 (e.g., 0.73)
+  basis: string               // "Weather patterns + historical delay data"
+  timeHorizon: string         // "~6 hours"
+  dataPoints: string[]        // evidence bullets
+  preStaged?: boolean         // has the EA pre-staged a response?
+}
+
 export interface ExceptionItem {
   id: string
   partnerId: string
@@ -80,6 +89,7 @@ export interface ExceptionItem {
   situationSummary: string
   entityChips: string[]
   options: ResolutionOption[]
+  prediction?: PredictionMetadata  // present = predicted risk, absent = active exception
 }
 
 export interface OverrideEntry {
@@ -304,6 +314,7 @@ export interface VIPContact {
     lastInteraction: string
   }
   status: "confirmed" | "suggested" | "dismissed"
+  avatarUrl?: string
 }
 
 // ── Recurring Commitments (Calendar-enriched) ──
@@ -325,6 +336,26 @@ export interface DeskNote {
   author: string
   content: string
   pinned: boolean
+}
+
+// ── Ambient Learning from Communications ──
+
+export type InsightSource = "email" | "calendar" | "chat" | "travel-history" | "expense-patterns"
+
+export interface AmbientInsight {
+  id: string
+  partnerId: string
+  source: InsightSource
+  observation: string         // "Partner consistently declines meetings before 9 AM"
+  evidence: string            // "7 of last 10 pre-9AM meetings declined (last 30 days)"
+  suggestedAction: {
+    type: "preference" | "authority-rule" | "desk-note"
+    description: string       // "Add scheduling rule: No meetings before 9 AM"
+    domain?: PreferenceCategory
+  }
+  confidence: number          // 0.0–1.0
+  observedOver: string        // "Last 30 days"
+  status: "active" | "accepted" | "dismissed"
 }
 
 export interface PartnerProfile {

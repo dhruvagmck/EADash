@@ -7,6 +7,7 @@ import type {
   SchedulingPreferences,
   CommunicationPreferences,
   ExpensePreferences,
+  AmbientInsight,
 } from "@/data/types"
 import PreferenceCard from "./PreferenceCard"
 import { Button } from "@/components/ui/button"
@@ -598,6 +599,45 @@ const TZ_LABELS: Record<string, string> = {
 // Main Component
 // ═══════════════════════════════════════════════════════
 
+// ── Inline Insight Banner ──
+
+function InlineInsightBanner({
+  insight,
+  onAccept,
+  onDismiss,
+}: {
+  insight: AmbientInsight
+  onAccept?: (id: string) => void
+  onDismiss?: (id: string) => void
+}) {
+  if (insight.status !== "active") return null
+  return (
+    <div className="flex items-start gap-2 rounded-md border border-indigo-200 bg-indigo-50/70 px-3 py-2 dark:border-indigo-800 dark:bg-indigo-950/40">
+      <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-500" />
+      <div className="min-w-0 flex-1">
+        <p className="text-[11px] leading-snug text-indigo-800 dark:text-indigo-200">
+          <span className="font-medium">Observation:</span> {insight.observation}.{" "}
+          <span className="text-indigo-600 dark:text-indigo-400">{insight.suggestedAction.description}?</span>
+        </p>
+      </div>
+      <div className="flex shrink-0 gap-1">
+        <button
+          onClick={() => onAccept?.(insight.id)}
+          className="rounded px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 hover:bg-indigo-100 dark:text-indigo-300 dark:hover:bg-indigo-900"
+        >
+          Accept
+        </button>
+        <button
+          onClick={() => onDismiss?.(insight.id)}
+          className="rounded px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-muted"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 interface StructuredPreferenceSectionProps {
   structured: StructuredPreferences
   freeTextPreferences: PartnerPreference[]
@@ -608,6 +648,9 @@ interface StructuredPreferenceSectionProps {
     communication: Partial<CommunicationPreferences>
     expenses: Partial<ExpensePreferences>
   }>) => void
+  ambientInsights?: AmbientInsight[]
+  onAcceptInsight?: (id: string) => void
+  onDismissInsight?: (id: string) => void
 }
 
 export default function StructuredPreferenceSection({
@@ -615,6 +658,9 @@ export default function StructuredPreferenceSection({
   freeTextPreferences,
   onAddPreference,
   onUpdateStructured,
+  ambientInsights = [],
+  onAcceptInsight,
+  onDismissInsight,
 }: StructuredPreferenceSectionProps) {
   const travel = structured.travel
   const sched = structured.scheduling
@@ -627,6 +673,13 @@ export default function StructuredPreferenceSection({
   const expNotes = freeTextPreferences.filter((p) => p.category === "expenses")
   const tsNotes = freeTextPreferences.filter((p) => p.category === "timesheets")
   const generalNotes = freeTextPreferences.filter((p) => p.category === "general")
+
+  // Filter active ambient insights by domain
+  const activeInsights = ambientInsights.filter((i) => i.status === "active" && i.suggestedAction.domain)
+  const travelInsights = activeInsights.filter((i) => i.suggestedAction.domain === "travel")
+  const schedInsights = activeInsights.filter((i) => i.suggestedAction.domain === "scheduling")
+  const commInsights = activeInsights.filter((i) => i.suggestedAction.domain === "communication")
+  const expInsights = activeInsights.filter((i) => i.suggestedAction.domain === "expenses")
 
   return (
     <div className="space-y-3">
@@ -705,6 +758,18 @@ export default function StructuredPreferenceSection({
             />
           </FieldRow>
         </div>
+        {travelInsights.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {travelInsights.map((insight) => (
+              <InlineInsightBanner
+                key={insight.id}
+                insight={insight}
+                onAccept={onAcceptInsight}
+                onDismiss={onDismissInsight}
+              />
+            ))}
+          </div>
+        )}
         <AdditionalNotes notes={travelNotes} category="travel" onAdd={onAddPreference} />
       </DomainSection>
 
@@ -775,6 +840,18 @@ export default function StructuredPreferenceSection({
           </div>
         )}
 
+        {schedInsights.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {schedInsights.map((insight) => (
+              <InlineInsightBanner
+                key={insight.id}
+                insight={insight}
+                onAccept={onAcceptInsight}
+                onDismiss={onDismissInsight}
+              />
+            ))}
+          </div>
+        )}
         <AdditionalNotes notes={schedNotes} category="scheduling" onAdd={onAddPreference} />
       </DomainSection>
 
@@ -805,6 +882,18 @@ export default function StructuredPreferenceSection({
             />
           </FieldRow>
         </div>
+        {commInsights.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {commInsights.map((insight) => (
+              <InlineInsightBanner
+                key={insight.id}
+                insight={insight}
+                onAccept={onAcceptInsight}
+                onDismiss={onDismissInsight}
+              />
+            ))}
+          </div>
+        )}
         <AdditionalNotes notes={commNotes} category="communication" onAdd={onAddPreference} />
       </DomainSection>
 
@@ -850,6 +939,18 @@ export default function StructuredPreferenceSection({
             />
           </FieldRow>
         </div>
+        {expInsights.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {expInsights.map((insight) => (
+              <InlineInsightBanner
+                key={insight.id}
+                insight={insight}
+                onAccept={onAcceptInsight}
+                onDismiss={onDismissInsight}
+              />
+            ))}
+          </div>
+        )}
         <AdditionalNotes notes={expNotes} category="expenses" onAdd={onAddPreference} />
       </DomainSection>
 

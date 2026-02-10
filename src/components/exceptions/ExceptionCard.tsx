@@ -8,22 +8,30 @@ import PartnerAvatar from "@/components/shared/PartnerAvatar"
 import SituationSummary from "./SituationSummary"
 import OptionsPanel from "./OptionsPanel"
 import EADecisionInput from "./EADecisionInput"
+import PredictionBadge from "./PredictionBadge"
+import PredictionBasis from "./PredictionBasis"
 import { cn } from "@/lib/utils"
-import { Clock, ChevronDown, ChevronUp } from "lucide-react"
+import { Clock, ChevronDown, ChevronUp, ShieldCheck } from "lucide-react"
 
 interface ExceptionCardProps {
   exception: ExceptionItem
   onResolve?: (exceptionId: string, optionId: string, note: string) => void
+  onDismissPrediction?: (exceptionId: string) => void
+  onPrestagePrediction?: (exceptionId: string) => void
 }
 
 export default function ExceptionCard({
   exception,
   onResolve,
+  onDismissPrediction,
+  onPrestagePrediction,
 }: ExceptionCardProps) {
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null)
   const [expanded, setExpanded] = useState(true)
   const partner = partners.find((p) => p.id === exception.partnerId)
   const severityStyle = EXCEPTION_SEVERITY_STYLES[exception.severity]
+  const isPrediction = !!exception.prediction
+  const isPreStaged = exception.prediction?.preStaged
 
   const handleResolve = (note: string) => {
     if (selectedOptionId) {
@@ -31,13 +39,31 @@ export default function ExceptionCard({
     }
   }
 
+  const handlePrestage = () => {
+    if (selectedOptionId) {
+      onPrestagePrediction?.(exception.id)
+    }
+  }
+
   return (
     <div
       className={cn(
-        "rounded-xl border-l-4 bg-card shadow-sm",
-        severityStyle.border
+        "rounded-xl bg-card shadow-sm",
+        isPrediction
+          ? "border-l-4 border-dashed border-l-indigo-400 ring-1 ring-indigo-100 dark:border-l-indigo-500 dark:ring-indigo-900/50"
+          : cn("border-l-4", severityStyle.border)
       )}
     >
+      {/* Pre-staged confirmation banner */}
+      {isPreStaged && (
+        <div className="flex items-center gap-2 rounded-t-xl bg-green-50 px-5 py-2 dark:bg-green-950/50">
+          <ShieldCheck className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+          <span className="text-xs font-medium text-green-700 dark:text-green-300">
+            Response pre-staged — will activate automatically if this event occurs
+          </span>
+        </div>
+      )}
+
       {/* 1. Header — clickable to collapse/expand */}
       <button
         onClick={() => setExpanded((e) => !e)}
@@ -56,7 +82,11 @@ export default function ExceptionCard({
                 {partner.name}
               </span>
             )}
-            <SeverityBadge severity={exception.severity} />
+            {isPrediction ? (
+              <PredictionBadge probability={exception.prediction!.probability} size="sm" />
+            ) : (
+              <SeverityBadge severity={exception.severity} />
+            )}
             <div className="flex items-center gap-1.5">
               {exception.domains.map((d) => (
                 <DomainIcon key={d} domain={d} size={16} />
@@ -80,6 +110,11 @@ export default function ExceptionCard({
       {/* Collapsible content */}
       {expanded && (
         <div className="space-y-5 px-5 py-4">
+          {/* Prediction basis (only for predicted exceptions) */}
+          {isPrediction && (
+            <PredictionBasis prediction={exception.prediction!} />
+          )}
+
           {/* 2. Situation Summary */}
           <SituationSummary
             summary={exception.situationSummary}
@@ -87,17 +122,29 @@ export default function ExceptionCard({
           />
 
           {/* 3. Options Panel */}
-          <OptionsPanel
-            options={exception.options}
-            selectedOptionId={selectedOptionId}
-            onSelect={setSelectedOptionId}
-          />
+          {!isPreStaged && (
+            <OptionsPanel
+              options={exception.options}
+              selectedOptionId={selectedOptionId}
+              onSelect={setSelectedOptionId}
+            />
+          )}
 
           {/* 4. EA Decision Input */}
-          <EADecisionInput
-            hasSelection={selectedOptionId !== null}
-            onResolve={handleResolve}
-          />
+          {isPrediction && !isPreStaged ? (
+            <EADecisionInput
+              hasSelection={selectedOptionId !== null}
+              onResolve={handleResolve}
+              isPrediction
+              onPrestage={handlePrestage}
+              onDismissPrediction={() => onDismissPrediction?.(exception.id)}
+            />
+          ) : !isPreStaged ? (
+            <EADecisionInput
+              hasSelection={selectedOptionId !== null}
+              onResolve={handleResolve}
+            />
+          ) : null}
         </div>
       )}
     </div>

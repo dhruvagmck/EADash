@@ -1,0 +1,111 @@
+import type { AmbientInsight } from "./types"
+
+export const ambientInsights: AmbientInsight[] = [
+  // ── Sarah Chen (partner-1) ──
+  {
+    id: "amb-1",
+    partnerId: "partner-1",
+    source: "calendar",
+    observation: "Declines 70% of meetings scheduled before 9:30 AM",
+    evidence: "7 of last 10 pre-9:30 AM meetings were declined or rescheduled to later slots over the past 30 days. Pattern is consistent across internal and external meetings.",
+    suggestedAction: {
+      type: "preference",
+      description: "Update earliest meeting time from 9:00 AM to 9:30 AM",
+      domain: "scheduling",
+    },
+    confidence: 0.87,
+    observedOver: "Last 30 days",
+    status: "active",
+  },
+  {
+    id: "amb-2",
+    partnerId: "partner-1",
+    source: "email",
+    observation: "Always edits AI-drafted client emails to use formal salutation",
+    evidence: "In 14 of 14 client-facing email drafts, Sarah replaced casual greetings ('Hi [Name]') with 'Dear [Name]' before sending. Internal emails left unchanged.",
+    suggestedAction: {
+      type: "preference",
+      description: "Set client correspondence tone to 'formal' with 'Dear [Name]' salutation",
+      domain: "communication",
+    },
+    confidence: 0.95,
+    observedOver: "Last 45 days",
+    status: "active",
+  },
+  {
+    id: "amb-3",
+    partnerId: "partner-1",
+    source: "travel-history",
+    observation: "Consistently books Marriott properties over Hilton when both available",
+    evidence: "Selected Marriott in 9 of 11 hotel bookings where both Marriott and Hilton were in-policy options at similar price points. Only chose Hilton when Marriott was sold out.",
+    suggestedAction: {
+      type: "preference",
+      description: "Add Marriott as preferred hotel chain in travel preferences",
+      domain: "travel",
+    },
+    confidence: 0.82,
+    observedOver: "Last 6 months",
+    status: "active",
+  },
+  {
+    id: "amb-4",
+    partnerId: "partner-1",
+    source: "email",
+    observation: "Sends follow-up emails within 2 hours of client meetings",
+    evidence: "After 8 of the last 10 client meetings, Sarah sent a follow-up 'thank you + next steps' email within 120 minutes. The other 2 were sent same-day.",
+    suggestedAction: {
+      type: "desk-note",
+      description: "Add desk note: Sarah prefers to send client follow-ups within 2 hours — prepare draft summaries proactively",
+    },
+    confidence: 0.78,
+    observedOver: "Last 60 days",
+    status: "active",
+  },
+
+  // ── James Whitfield (partner-2) ──
+  {
+    id: "amb-5",
+    partnerId: "partner-2",
+    source: "expense-patterns",
+    observation: "Always uses Uber Black for ground transport — never standard taxi or rideshare",
+    evidence: "12 of 12 ground transport expenses in the last 90 days were Uber Black. No standard taxi, Lyft, or UberX charges found.",
+    suggestedAction: {
+      type: "preference",
+      description: "Set default ground transport to Uber Black in expense preferences",
+      domain: "expenses",
+    },
+    confidence: 0.93,
+    observedOver: "Last 90 days",
+    status: "active",
+  },
+  {
+    id: "amb-6",
+    partnerId: "partner-2",
+    source: "chat",
+    observation: "Never responds to Slack messages after 6:00 PM",
+    evidence: "0 of 23 Slack messages received after 6:00 PM were responded to same-evening. All were addressed the following morning by 8:30 AM. Pattern holds across weekdays.",
+    suggestedAction: {
+      type: "authority-rule",
+      description: "Add protected time rule: No scheduling or correspondence actions after 6:00 PM",
+      domain: "scheduling",
+    },
+    confidence: 0.91,
+    observedOver: "Last 30 days",
+    status: "active",
+  },
+  {
+    id: "amb-7",
+    partnerId: "partner-2",
+    source: "calendar",
+    observation: "Rescheduled Friday afternoon meetings 80% of the time",
+    evidence: "8 of last 10 meetings originally scheduled for Friday after 2:00 PM were moved to earlier in the week or to Friday morning. James appears to protect Friday afternoons.",
+    suggestedAction: {
+      type: "preference",
+      description: "Add Friday as a 'light day' and set latest Friday meeting to 2:00 PM",
+      domain: "scheduling",
+    },
+    confidence: 0.85,
+    observedOver: "Last 60 days",
+    status: "active",
+  },
+]

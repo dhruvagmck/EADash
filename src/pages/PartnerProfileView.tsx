@@ -29,7 +29,10 @@ export default function PartnerProfileView() {
     confirmCommitment,
     dismissCommitment,
     updateStructuredPrefs,
+    acceptAmbientInsight,
+    dismissAmbientInsight,
   } = useDashboardActions()
+  const { ambientInsights } = useDashboardState()
 
   // Count preferences + notes per partner for the filter bar badges
   const partnerCounts = useMemo(() => {
@@ -109,6 +112,11 @@ export default function PartnerProfileView() {
             onUpdateStructured={(patch) =>
               updateStructuredPrefs(effectiveId, patch)
             }
+            ambientInsights={ambientInsights.filter(
+              (i) => i.partnerId === effectiveId
+            )}
+            onAcceptInsight={acceptAmbientInsight}
+            onDismissInsight={dismissAmbientInsight}
           />
         ) : (
           <div className="flex flex-1 items-center justify-center">

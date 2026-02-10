@@ -18,15 +18,17 @@ import type {
   DeskNote,
   VIPContact,
   RecurringCommitment,
+  AmbientInsight,
 } from "@/data/types"
 import { supervisionItems as initialSupervision } from "@/data/supervision"
-import { exceptionItems as initialExceptions } from "@/data/exceptions"
+import { exceptionItems as initialExceptions, predictedExceptions as initialPredictions } from "@/data/exceptions"
 import {
   authorityAdjustments as initialAdjustments,
   proactiveGuidance as initialGuidance,
 } from "@/data/insights"
 import { signalBlocks as initialSignals } from "@/data/signals"
 import { partnerProfiles as initialProfiles } from "@/data/profiles"
+import { ambientInsights as initialAmbientInsights } from "@/data/ambientInsights"
 
 // ── Actions ──
 
@@ -59,25 +61,35 @@ type Action =
       communication: Partial<StructuredPreferences["communication"]>
       expenses: Partial<StructuredPreferences["expenses"]>
     }> }
+  // Predicted exceptions
+  | { type: "DISMISS_PREDICTION"; id: string }
+  | { type: "PRESTAGE_PREDICTION"; id: string }
+  // Ambient insights
+  | { type: "ACCEPT_AMBIENT_INSIGHT"; id: string }
+  | { type: "DISMISS_AMBIENT_INSIGHT"; id: string }
 
 // ── State ──
 
 interface DashboardState {
   supervisionItems: SupervisionItem[]
   exceptionItems: ExceptionItem[]
+  predictedExceptions: ExceptionItem[]
   adjustments: AuthorityAdjustment[]
   guidance: ProactiveGuidance[]
   signals: SignalBlockData[]
   partnerProfiles: PartnerProfile[]
+  ambientInsights: AmbientInsight[]
 }
 
 const initialState: DashboardState = {
   supervisionItems: [...initialSupervision],
   exceptionItems: [...initialExceptions],
+  predictedExceptions: [...initialPredictions],
   adjustments: [...initialAdjustments],
   guidance: [...initialGuidance],
   signals: [...initialSignals],
   partnerProfiles: [...initialProfiles],
+  ambientInsights: [...initialAmbientInsights],
 }
 
 // ── Helper: update a single partner profile ──
@@ -423,6 +435,44 @@ function reducer(state: DashboardState, action: Action): DashboardState {
       }
     }
 
+    // ── Predicted Exceptions ──
+
+    case "DISMISS_PREDICTION":
+      return {
+        ...state,
+        predictedExceptions: state.predictedExceptions.filter(
+          (p) => p.id !== action.id
+        ),
+      }
+
+    case "PRESTAGE_PREDICTION":
+      return {
+        ...state,
+        predictedExceptions: state.predictedExceptions.map((p) =>
+          p.id === action.id && p.prediction
+            ? { ...p, prediction: { ...p.prediction, preStaged: true } }
+            : p
+        ),
+      }
+
+    // ── Ambient Insights ──
+
+    case "ACCEPT_AMBIENT_INSIGHT":
+      return {
+        ...state,
+        ambientInsights: state.ambientInsights.map((i) =>
+          i.id === action.id ? { ...i, status: "accepted" as const } : i
+        ),
+      }
+
+    case "DISMISS_AMBIENT_INSIGHT":
+      return {
+        ...state,
+        ambientInsights: state.ambientInsights.map((i) =>
+          i.id === action.id ? { ...i, status: "dismissed" as const } : i
+        ),
+      }
+
     default:
       return state
   }
@@ -591,6 +641,30 @@ export function useDashboardActions() {
     [dispatch]
   )
 
+  // ── Predicted Exceptions ──
+
+  const dismissPrediction = useCallback(
+    (id: string) => dispatch({ type: "DISMISS_PREDICTION", id }),
+    [dispatch]
+  )
+
+  const prestagePrediction = useCallback(
+    (id: string) => dispatch({ type: "PRESTAGE_PREDICTION", id }),
+    [dispatch]
+  )
+
+  // ── Ambient Insights ──
+
+  const acceptAmbientInsight = useCallback(
+    (id: string) => dispatch({ type: "ACCEPT_AMBIENT_INSIGHT", id }),
+    [dispatch]
+  )
+
+  const dismissAmbientInsight = useCallback(
+    (id: string) => dispatch({ type: "DISMISS_AMBIENT_INSIGHT", id }),
+    [dispatch]
+  )
+
   return {
     approveSupervision,
     rejectSupervision,
@@ -614,24 +688,30 @@ export function useDashboardActions() {
     confirmCommitment,
     dismissCommitment,
     updateStructuredPrefs,
+    dismissPrediction,
+    prestagePrediction,
+    acceptAmbientInsight,
+    dismissAmbientInsight,
   }
 }
 
 /** Badge counts derived from state */
 export function useBadgeCounts() {
-  const { supervisionItems, exceptionItems, adjustments, guidance, signals } =
+  const { supervisionItems, exceptionItems, predictedExceptions, adjustments, guidance, signals, ambientInsights } =
     useDashboardState()
 
   const portfolioAttention = signals.filter(
     (s) => s.severity === "urgent" || s.severity === "review"
   ).length
 
+  const activeInsights = ambientInsights.filter((i) => i.status === "active").length
+
   return {
     "/portfolio": portfolioAttention,
-    "/partners": 0,
+    "/partners": activeInsights,
     "/authority": 0,
     "/supervision": supervisionItems.length,
-    "/exceptions": exceptionItems.length,
+    "/exceptions": exceptionItems.length + predictedExceptions.length,
     "/insights": adjustments.length + guidance.length,
     "/settings": 0,
   } as Record<string, number>

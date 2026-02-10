@@ -13,6 +13,7 @@ import type {
   DeskNote,
   VIPContact,
   RecurringCommitment,
+  AmbientInsight,
 } from "@/data/types"
 import PartnerAvatar from "@/components/shared/PartnerAvatar"
 import AuthoritySummaryBar from "@/components/authority/AuthoritySummaryBar"
@@ -22,6 +23,7 @@ import VIPContactList from "./VIPContactList"
 import CommitmentList from "./CommitmentList"
 import DeskNoteLog from "./DeskNoteLog"
 import CoverageHandoff from "./CoverageHandoff"
+import AmbientInsightsPanel from "./AmbientInsightsPanel"
 import LinkedRuleBadge from "./LinkedRuleBadge"
 import {
   Heart,
@@ -32,6 +34,7 @@ import {
   ArrowRightLeft,
   ExternalLink,
   Clock,
+  Sparkles,
 } from "lucide-react"
 
 interface ProfileContentProps {
@@ -57,6 +60,9 @@ interface ProfileContentProps {
     communication: Partial<CommunicationPreferences>
     expenses: Partial<ExpensePreferences>
   }>) => void
+  ambientInsights?: AmbientInsight[]
+  onAcceptInsight?: (id: string) => void
+  onDismissInsight?: (id: string) => void
 }
 
 export default function ProfileContent({
@@ -77,6 +83,9 @@ export default function ProfileContent({
   onConfirmCommitment,
   onDismissCommitment,
   onUpdateStructured,
+  ambientInsights = [],
+  onAcceptInsight,
+  onDismissInsight,
 }: ProfileContentProps) {
   const navigate = useNavigate()
   const partnerRules = rules.filter((r) => r.partnerId === partner.id)
@@ -92,6 +101,9 @@ export default function ProfileContent({
   ).length
   const suggestedCommitments = profile.recurringCommitments.filter(
     (c) => c.status === "suggested"
+  ).length
+  const activeInsightCount = ambientInsights.filter(
+    (i) => i.status === "active"
   ).length
 
   return (
@@ -126,6 +138,15 @@ export default function ProfileContent({
           <TabsTrigger value="preferences" className="gap-1.5 text-xs">
             <Heart className="h-3.5 w-3.5" />
             Preferences
+          </TabsTrigger>
+          <TabsTrigger value="ai-observations" className="gap-1.5 text-xs">
+            <Sparkles className="h-3.5 w-3.5" />
+            AI Observations
+            {activeInsightCount > 0 && (
+              <span className="ml-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400">
+                {activeInsightCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="timesheets" className="gap-1.5 text-xs">
             <Clock className="h-3.5 w-3.5" />
@@ -177,6 +198,23 @@ export default function ProfileContent({
               freeTextPreferences={profile.preferences}
               onAddPreference={onUpdatePreference}
               onUpdateStructured={onUpdateStructured}
+              ambientInsights={ambientInsights}
+              onAcceptInsight={onAcceptInsight}
+              onDismissInsight={onDismissInsight}
+            />
+          </div>
+        </TabsContent>
+
+        {/* AI Observations Tab */}
+        <TabsContent
+          value="ai-observations"
+          className="min-h-0 flex-1 overflow-y-auto"
+        >
+          <div className="pr-4">
+            <AmbientInsightsPanel
+              insights={ambientInsights}
+              onAccept={onAcceptInsight}
+              onDismiss={onDismissInsight}
             />
           </div>
         </TabsContent>
