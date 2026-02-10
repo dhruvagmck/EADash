@@ -38,7 +38,7 @@ export default function EADecisionInput({
               Open SkyLink
             </Button>
             <Button size="sm" variant="outline" className="text-xs">
-              Open AdminBuddy
+              Open Aurora
             </Button>
           </div>
         </div>

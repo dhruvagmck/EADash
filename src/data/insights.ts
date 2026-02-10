@@ -14,7 +14,7 @@ export const authorityAdjustments: AuthorityAdjustment[] = [
     evidence:
       "In the last 30 days, you approved 7 of 8 items under this rule without modification (88% pass-through rate).",
     implication:
-      "If upgraded to CAN, AdminBuddy will execute these autonomously, saving ~1.5 hours/month of review time.",
+      "If upgraded to CAN, Aurora will execute these autonomously, saving ~1.5 hours/month of review time.",
     riskNote:
       "The 1 modified item involved a VIP attendee (Goldman Sachs). You could add a condition to keep VIP-related confirmations as SHOULD while upgrading the rest.",
     currentLevel: "SHOULD",
