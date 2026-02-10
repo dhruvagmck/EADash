@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import type {
   PartnerProfile,
   PartnerPreference,
-  StructuredPreferences,
   TravelPreferences,
   SchedulingPreferences,
   CommunicationPreferences,

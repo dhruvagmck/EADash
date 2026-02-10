@@ -10,7 +10,6 @@ import {
   X,
   Check,
   XCircle,
-  Sparkles,
   Pencil,
   CalendarSync,
   ArrowRight,

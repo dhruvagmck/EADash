@@ -25,13 +25,6 @@ interface VIPContactListProps {
   onDismiss?: (contactName: string) => void
 }
 
-function SourceIcon({ source }: { source: VIPContact["source"] }) {
-  if (source === "outlook-inferred" || source === "outlook-confirmed") {
-    return <MailOpen className="h-2.5 w-2.5" />
-  }
-  return <Pencil className="h-2.5 w-2.5" />
-}
-
 function SourceBadge({ source }: { source: VIPContact["source"] }) {
   if (source === "outlook-inferred") {
     return (
