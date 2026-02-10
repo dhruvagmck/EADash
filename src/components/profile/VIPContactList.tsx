@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
   Plus,
   User,
@@ -16,6 +17,15 @@ import {
   Pencil,
   MailOpen,
 } from "lucide-react"
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+}
 
 interface VIPContactListProps {
   contacts: VIPContact[]
@@ -124,9 +134,14 @@ export default function VIPContactList({
               className="gap-0 border-indigo-100 bg-indigo-50/30 p-4 dark:border-indigo-900 dark:bg-indigo-950/10"
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50">
-                  <User className="h-4 w-4 text-indigo-500" />
-                </div>
+                <Avatar className="h-9 w-9 shrink-0">
+                  {contact.avatarUrl && (
+                    <AvatarImage src={contact.avatarUrl} alt={contact.name} className="object-cover" />
+                  )}
+                  <AvatarFallback className="bg-indigo-100 text-xs font-medium text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+                    {getInitials(contact.name)}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <div>
@@ -177,9 +192,14 @@ export default function VIPContactList({
           {confirmed.map((contact) => (
             <Card key={contact.name} className="gap-0 p-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                </div>
+                <Avatar className="h-9 w-9 shrink-0">
+                  {contact.avatarUrl && (
+                    <AvatarImage src={contact.avatarUrl} alt={contact.name} className="object-cover" />
+                  )}
+                  <AvatarFallback className="bg-muted text-xs font-medium text-muted-foreground">
+                    {getInitials(contact.name)}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

@@ -229,6 +229,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-confirmed",
         interactionStats: { emailCount30d: 89, meetingCount30d: 12, lastInteraction: "Today" },
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       },
       {
         name: "Margaret Chen",
@@ -236,6 +237,7 @@ export const partnerProfiles: PartnerProfile[] = [
         notes: "Contact for personal calendar conflicts or family emergency reach-out. Preferred contact: mobile.",
         source: "manual",
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/women/67.jpg",
       },
       {
         name: "Robert Tanaka",
@@ -244,6 +246,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-confirmed",
         interactionStats: { emailCount30d: 34, meetingCount30d: 6, lastInteraction: "Feb 7, 2026" },
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
       },
       // Outlook-inferred suggestions
       {
@@ -253,6 +256,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-inferred",
         interactionStats: { emailCount30d: 23, meetingCount30d: 4, lastInteraction: "Feb 9, 2026" },
         status: "suggested",
+        avatarUrl: "https://randomuser.me/api/portraits/women/28.jpg",
       },
       {
         name: "Amanda Liu",
@@ -261,6 +265,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-inferred",
         interactionStats: { emailCount30d: 18, meetingCount30d: 3, lastInteraction: "Feb 8, 2026" },
         status: "suggested",
+        avatarUrl: "https://randomuser.me/api/portraits/women/52.jpg",
       },
       {
         name: "Tom Bradley",
@@ -269,6 +274,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-inferred",
         interactionStats: { emailCount30d: 15, meetingCount30d: 2, lastInteraction: "Feb 6, 2026" },
         status: "suggested",
+        avatarUrl: "https://randomuser.me/api/portraits/men/61.jpg",
       },
     ],
 
@@ -584,6 +590,7 @@ export const partnerProfiles: PartnerProfile[] = [
         notes: "Contact for personal calendar matters. She manages family diary and school pick-up schedule.",
         source: "manual",
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/women/71.jpg",
       },
       {
         name: "Alastair Henderson",
@@ -592,6 +599,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-confirmed",
         interactionStats: { emailCount30d: 42, meetingCount30d: 8, lastInteraction: "Feb 9, 2026" },
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/men/76.jpg",
       },
       {
         name: "Sophie Martin",
@@ -600,6 +608,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-confirmed",
         interactionStats: { emailCount30d: 56, meetingCount30d: 2, lastInteraction: "Feb 10, 2026" },
         status: "confirmed",
+        avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
       },
       // Outlook-inferred suggestions
       {
@@ -609,6 +618,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-inferred",
         interactionStats: { emailCount30d: 19, meetingCount30d: 3, lastInteraction: "Feb 7, 2026" },
         status: "suggested",
+        avatarUrl: "https://randomuser.me/api/portraits/men/54.jpg",
       },
       {
         name: "Priya Sharma",
@@ -617,6 +627,7 @@ export const partnerProfiles: PartnerProfile[] = [
         source: "outlook-inferred",
         interactionStats: { emailCount30d: 14, meetingCount30d: 5, lastInteraction: "Feb 8, 2026" },
         status: "suggested",
+        avatarUrl: "https://randomuser.me/api/portraits/women/49.jpg",
       },
     ],
 

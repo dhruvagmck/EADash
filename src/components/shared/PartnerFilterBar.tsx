@@ -1,6 +1,7 @@
 import type { Partner } from "@/data/types"
 import { cn } from "@/lib/utils"
 import { Users } from "lucide-react"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 interface PartnerFilterBarProps {
   partners: Partner[]
@@ -74,15 +75,22 @@ export default function PartnerFilterBar({
             }
           >
             {/* Mini avatar */}
-            <span
+            <Avatar
               className={cn(
-                "flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white",
+                "h-4 w-4",
                 isActive && "ring-1 ring-white/30"
               )}
-              style={{ backgroundColor: isActive ? "rgba(255,255,255,0.25)" : partner.colorAccent }}
             >
-              {partner.initials}
-            </span>
+              {partner.avatarUrl && (
+                <AvatarImage src={partner.avatarUrl} alt={partner.name} className="object-cover" />
+              )}
+              <AvatarFallback
+                className="text-[9px] font-bold text-white"
+                style={{ backgroundColor: isActive ? "rgba(255,255,255,0.25)" : partner.colorAccent }}
+              >
+                {partner.initials}
+              </AvatarFallback>
+            </Avatar>
             {partner.name}
             {count > 0 && (
               <span

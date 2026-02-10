@@ -14,6 +14,7 @@ import {
   Plane,
   Receipt,
 } from "lucide-react"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
   Tooltip,
   TooltipContent,
@@ -42,19 +43,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div
           className={cn(
             "flex shrink-0 items-center border-b border-slate-800",
-            collapsed ? "justify-center px-2 py-4" : "gap-2.5 px-4 py-4"
+            collapsed ? "justify-center px-2 py-4" : "px-4 py-4"
           )}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500 text-sm font-bold text-white">
-            EA
-          </div>
           {!collapsed && (
-            <div>
-              <p className="text-sm font-semibold leading-tight">EA HITL</p>
-              <p className="text-[11px] text-slate-400">
-                Orchestration Dashboard
-              </p>
-            </div>
+            <p className="text-lg font-extrabold leading-tight tracking-tight">EA Cockpit</p>
           )}
         </div>
 
@@ -259,9 +252,16 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           )}
         >
           <div className="flex flex-row items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
-              AK
-            </div>
+            <Avatar className="h-8 w-8 shrink-0">
+              <AvatarImage
+                src="https://randomuser.me/api/portraits/men/85.jpg"
+                alt="Alex Kim"
+                className="object-cover"
+              />
+              <AvatarFallback className="bg-indigo-600 text-xs font-semibold text-white">
+                AK
+              </AvatarFallback>
+            </Avatar>
             {!collapsed && (
               <div className="min-w-0">
                 <p className="truncate text-[13px] font-medium text-slate-200">

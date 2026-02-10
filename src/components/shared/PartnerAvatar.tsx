@@ -1,5 +1,6 @@
 import type { Partner } from "@/data/types"
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 interface PartnerAvatarProps {
   partner: Partner
@@ -22,15 +23,23 @@ export default function PartnerAvatar({
 }: PartnerAvatarProps) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div
-        className={cn(
-          "flex shrink-0 items-center justify-center rounded-full font-semibold text-white",
-          sizeMap[size]
-        )}
-        style={{ backgroundColor: partner.colorAccent }}
+      <Avatar
+        className={cn(sizeMap[size], "shrink-0")}
       >
-        {partner.initials}
-      </div>
+        {partner.avatarUrl && (
+          <AvatarImage
+            src={partner.avatarUrl}
+            alt={partner.name}
+            className="object-cover"
+          />
+        )}
+        <AvatarFallback
+          className="font-semibold text-white"
+          style={{ backgroundColor: partner.colorAccent, fontSize: "inherit" }}
+        >
+          {partner.initials}
+        </AvatarFallback>
+      </Avatar>
       {showInfo && (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{partner.name}</p>

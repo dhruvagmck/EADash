@@ -9,6 +9,7 @@ export const partners: Partner[] = [
     location: "New York",
     coverageStatus: "active",
     colorAccent: "#6366f1",
+    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     id: "partner-2",
@@ -19,6 +20,7 @@ export const partners: Partner[] = [
     coverageStatus: "coverage",
     coverageName: "Maria Lopez",
     colorAccent: "#8b5cf6",
+    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
   },
 ]
 
