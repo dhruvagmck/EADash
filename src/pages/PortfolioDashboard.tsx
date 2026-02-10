@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react"
 import PageHeader from "@/components/layout/PageHeader"
-import StaleBanner from "@/components/shared/StaleBanner"
 import IntentBar, { type FocusMode } from "@/components/portfolio/IntentBar"
 import PartnerSwimlane from "@/components/portfolio/PartnerSwimlane"
 import PortfolioDetailPanel from "@/components/portfolio/PortfolioDetailPanel"
@@ -12,9 +11,9 @@ import type { SignalBlockData, Severity, Domain } from "@/data/types"
 // Map focus modes to the domains they cover
 const FOCUS_DOMAIN_MAP: Record<FocusMode, Domain[] | null> = {
   all: null, // no filter
-  "client-facing": ["correspondence", "documents", "scheduling"],
-  "people-sensitive": ["people-sensitive"],
-  "travel-logistics": ["travel", "expenses"],
+  "client-facing": ["client-facing", "email-triage"],
+  "internal": ["internal-scheduling", "timesheets"],
+  "travel-expenses": ["travel-expenses"],
   custom: null, // driven by customDomains state
 }
 
@@ -100,12 +99,6 @@ export default function PortfolioDashboard() {
       />
 
       {/* Stale data / error banner (demo — would be driven by WebSocket state) */}
-      <StaleBanner
-        variant="warning"
-        message="AdminBuddy connection interrupted."
-        detail="Some items may be delayed. Data as of 10:32 AM."
-        dismissible
-      />
 
       {/* Zone A: Intent Bar */}
       <IntentBar

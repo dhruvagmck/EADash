@@ -4,7 +4,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-1",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     title: "Draft reply to Goldman Sachs: Q1 strategy review meeting",
     timeAgo: "4h ago",
     minutesAgo: 240,
@@ -27,7 +27,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-2",
     partnerId: "partner-1",
-    domain: "correspondence",
+    domain: "email-triage",
     title: "Draft reply to Board Secretary: agenda item confirmation",
     timeAgo: "2h ago",
     minutesAgo: 120,
@@ -50,7 +50,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-3",
     partnerId: "partner-2",
-    domain: "travel",
+    domain: "travel-expenses",
     title: "Flight rebooking: CDG→LHR, 2 options for James Whitfield",
     timeAgo: "45m ago",
     minutesAgo: 45,
@@ -70,7 +70,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-4",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     title: "Reschedule: Board prep conflicts with Acme Corp call",
     timeAgo: "1h ago",
     minutesAgo: 60,
@@ -90,7 +90,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-5",
     partnerId: "partner-2",
-    domain: "correspondence",
+    domain: "email-triage",
     title: "Draft: KPMG joint venture proposal response",
     timeAgo: "3h ago",
     minutesAgo: 180,
@@ -113,7 +113,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-6",
     partnerId: "partner-1",
-    domain: "expenses",
+    domain: "travel-expenses",
     title: "Expense flag: Client dinner over $500 threshold",
     timeAgo: "30m ago",
     minutesAgo: 30,
@@ -133,7 +133,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-7",
     partnerId: "partner-2",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     title: "Double-booking resolution: Two client calls at 3:00 PM Feb 11",
     timeAgo: "20m ago",
     minutesAgo: 20,
@@ -153,7 +153,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-8",
     partnerId: "partner-1",
-    domain: "documents",
+    domain: "client-facing",
     title: "Board briefing document: AI draft ready for review",
     timeAgo: "5h ago",
     minutesAgo: 300,
@@ -174,7 +174,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-9",
     partnerId: "partner-2",
-    domain: "correspondence",
+    domain: "email-triage",
     title: "Follow-up reminder: Barclays meeting request (no response 4 days)",
     timeAgo: "1h ago",
     minutesAgo: 60,
@@ -197,7 +197,7 @@ export const supervisionItems: SupervisionItem[] = [
   {
     id: "sup-10",
     partnerId: "partner-1",
-    domain: "scheduling",
+    domain: "internal-scheduling",
     title: "External meeting confirmation: Deloitte partnership discussion",
     timeAgo: "6h ago",
     minutesAgo: 360,
