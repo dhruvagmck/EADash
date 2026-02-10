@@ -151,7 +151,7 @@ export default function SupervisionQueue() {
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
         title="Supervision"
-        subtitle="Review held actions — approve, modify, or reject"
+        subtitle="Review held actions before they execute"
       />
 
       {/* Partner filter bar */}

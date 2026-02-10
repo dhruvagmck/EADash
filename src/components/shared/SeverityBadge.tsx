@@ -1,6 +1,12 @@
 import { SEVERITY_STYLES, EXCEPTION_SEVERITY_STYLES } from "@/lib/constants"
 import type { Severity, ExceptionSeverity } from "@/data/types"
 import { cn } from "@/lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface SeverityBadgeProps {
   severity: Severity | ExceptionSeverity
@@ -14,22 +20,37 @@ const SEVERITY_LABELS: Record<Severity, string> = {
   clear: "Clear",
 }
 
+const EXCEPTION_TOOLTIPS: Record<string, string> = {
+  P1: "Critical — requires immediate attention",
+  P2: "Important — address within the hour",
+  P3: "Low priority — handle when convenient",
+}
+
 export default function SeverityBadge({ severity, className }: SeverityBadgeProps) {
   // Exception severity (P1, P2, P3)
   if (severity === "P1" || severity === "P2" || severity === "P3") {
     const style = EXCEPTION_SEVERITY_STYLES[severity]
     return (
-      <span
-        className={cn(
-          "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
-          style.bg,
-          style.text,
-          style.border,
-          className
-        )}
-      >
-        {severity}
-      </span>
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
+                style.bg,
+                style.text,
+                style.border,
+                className
+              )}
+            >
+              {severity}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-xs">
+            {EXCEPTION_TOOLTIPS[severity]}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     )
   }
 

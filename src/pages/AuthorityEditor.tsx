@@ -26,7 +26,7 @@ export default function AuthorityEditor() {
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
         title="Authority"
-        subtitle="Define CAN / SHOULD / CANNOT rules per Partner per domain"
+        subtitle="CAN / SHOULD / CANNOT rules per partner and domain"
       />
 
       {/* Partner filter bar — no "All" since rules are per-partner */}

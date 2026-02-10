@@ -3,9 +3,8 @@ import { partners } from "@/data/partners"
 import DomainIcon from "@/components/shared/DomainIcon"
 import TimeIndicator from "@/components/shared/TimeIndicator"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-import { Check, Pencil } from "lucide-react"
+import { Check } from "lucide-react"
 
 interface QueueCardProps {
   item: SupervisionItem
@@ -38,11 +37,8 @@ export default function QueueCard({
         style={{ backgroundColor: partner?.colorAccent }}
       />
 
-      {/* Checkbox */}
-      <Checkbox className="mt-0.5 ml-2 shrink-0" onClick={(e) => e.stopPropagation()} />
-
       {/* Domain icon */}
-      <DomainIcon domain={item.domain} size={18} className="mt-0.5 shrink-0" />
+      <DomainIcon domain={item.domain} size={18} className="mt-0.5 ml-2 shrink-0" />
 
       {/* Content */}
       <div className="min-w-0 flex-1">
@@ -55,7 +51,7 @@ export default function QueueCard({
       {/* Right side */}
       <div className="flex shrink-0 flex-col items-end gap-2">
         <TimeIndicator timeAgo={item.timeAgo} minutesAgo={item.minutesAgo} />
-        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="opacity-0 transition-opacity group-hover:opacity-100">
           <Button
             size="sm"
             variant="outline"
@@ -67,18 +63,6 @@ export default function QueueCard({
           >
             <Check className="h-3 w-3 shrink-0" />
             <span className="hidden sm:inline">Approve</span>
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-6 gap-1 px-2 text-[11px]"
-            onClick={(e) => {
-              e.stopPropagation()
-              onApprove?.()
-            }}
-          >
-            <Pencil className="h-3 w-3 shrink-0" />
-            <span className="hidden sm:inline">Modify</span>
           </Button>
         </div>
       </div>

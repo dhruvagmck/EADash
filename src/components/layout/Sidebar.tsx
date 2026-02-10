@@ -98,7 +98,9 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                           </Badge>
                         )}
                         {collapsed && badge > 0 && (
-                          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-indigo-500 px-1 text-[9px] font-bold text-white">
+                            {badge > 99 ? "99+" : badge}
+                          </span>
                         )}
                       </>
                     )}

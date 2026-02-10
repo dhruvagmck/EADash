@@ -95,7 +95,7 @@ export default function PortfolioDashboard() {
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
         title="Portfolio"
-        subtitle="Across all Partners and domains — where does your attention need to go?"
+        subtitle="Where your attention needs to go across partners and domains"
       />
 
       {/* Stale data / error banner (demo — would be driven by WebSocket state) */}
